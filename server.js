@@ -11,7 +11,7 @@ var secret = require('./secret/secret');
 var Book = require('./models/book');
 // get our routes
 var homeRoutes = require('./routes/main');
-// needed for logging 
+// needed for logging
 var logger = require('morgan');
 // needed for the view
 var ejs = require('ejs');
@@ -48,4 +48,3 @@ app.listen(secret.port, function(err){
 	// keep the user aware of the status of the server
 	console.log("Server running on port:", secret.port);
 });
-
