@@ -1,7 +1,6 @@
 export default {
   books: 'books',
-  book: 'book',
-  add: 'add',
-  update: 'update',
-  delete: 'delete',
+  addBook: 'book/add',
+  updateBook: 'book/update',
+  deleteBook: 'book/delete',
 };

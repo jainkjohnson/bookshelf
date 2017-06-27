@@ -4,7 +4,7 @@ var router = require('express').Router();
 // require our book Schema
 var Book = require('../models/book');
 
-// Get all books
+// GET all books
 router.get('/books', function(req, res, next) {
   Book.find({}).exec(function(err, books) {
     // return an error when it occurs
@@ -19,23 +19,23 @@ router.get('/books', function(req, res, next) {
 //   res.render('book/add-book', { message: "" });
 // })
 
-// // post or add a new book
-// router.post('/book', function(req, res, next) {
-//   // create a new book instance
-//   var newBook = new Book();
+// POST or add a new book
+router.post('/book/add', function(req, res, next) {
+  // create a new book instance
+  var newBook = new Book();
 
-//   // get the submitted book attributes
-//   newBook.title = req.body.title;
-//   newBook.author = req.body.author;
-//   newBook.category = req.body.category;
+  // get the submitted book attributes
+  newBook.title = req.body.title;
+  newBook.author = req.body.author;
+  newBook.category = req.body.category;
 
-//   newBook.save(function(err, book) {
-//     // incase of an error return it
-//     if (err) return next(err);
-//     // return success feedback
-//     res.render('book/add-book', { message: 'Book successfully added' });
-//   });
-// });
+  newBook.save(function(err, book) {
+    // incase of an error return it
+    if (err) return next(err);
+    // return success feedback
+    res.status(201).send({ message: 'Book successfully added' });
+  });
+});
 
 // router.get('/update-book/:id', function(req, res, next) {
 //     // return a single book

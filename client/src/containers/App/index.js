@@ -26,6 +26,16 @@ export default class App extends PureComponent {
   componentDidMount() {
     Api.GET({ endpoint: bookApi.books })
       .then((books) => console.log('books: ', books));
+
+    Api.POST({
+      endpoint: bookApi.addBook,
+      body: {
+        title: 'HAHAHA',
+        author: 'njan',
+        category: 'testing',
+      },
+    })
+    .then((response) => console.log('books: ', response));
   }
 
   componentWillReceiveProps() {
