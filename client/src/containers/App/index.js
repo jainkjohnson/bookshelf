@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react';
+import Api from 'src/helpers/Api';
+import bookApi from 'src/config/endpoints/book';
 
 export default class App extends PureComponent {
   static propTypes = {
@@ -22,6 +24,8 @@ export default class App extends PureComponent {
   }
 
   componentDidMount() {
+    Api.GET({ endpoint: bookApi.books })
+      .then((books) => console.log('books: ', books));
   }
 
   componentWillReceiveProps() {

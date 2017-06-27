@@ -8,13 +8,16 @@ const DEV_URL = `http://localhost:${PORT}/`;
 console.log('DEV_URL : ', DEV_URL);
 
 module.exports = {
-  devtool: 'cheap-eval-source-map',
+  devtool: 'eval',
   context: path.resolve(__dirname, '..'),
   entry: './index.js',
   devServer: {
     historyApiFallback: true,
     publicPath: DEV_URL,
-    port: PORT
+    port: PORT,
+    proxy: {
+      '/': 'http://localhost:8001'
+    }
   },
   output: {
     filename: 'bundle.js',
@@ -63,7 +66,10 @@ module.exports = {
     ]
   },
   resolve: {
-    modules: ['client', 'node_modules'],
+    modules: [
+      'client', // intentional, so I don't confound directory names with npm packages
+      'node_modules',
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
