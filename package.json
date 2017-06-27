@@ -4,7 +4,8 @@
   "description": "A place to organize your bibliographic collections.",
   "main": "server.js",
   "scripts": {
-    "dev": "webpack-dev-server --config client/webpack/dev.js --colors --host=0.0.0.0 --progress"
+    "dev-api": "nodemon server",
+    "dev-cli": "webpack-dev-server --config client/webpack/dev.js --colors --host=0.0.0.0 --progress"
   },
   "author": "Yadhu Kiran",
   "license": "MIT",
@@ -42,6 +43,7 @@
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.1.0",
     "html-webpack-plugin": "^2.29.0",
+    "nodemon": "^1.11.0",
     "webpack-dev-server": "^2.5.0"
   }
 }
