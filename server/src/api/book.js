@@ -1,5 +1,7 @@
 // requiring express routes
 var router = require('express').Router();
+var shortid = require('shortid');
+
 
 // require our book Schema
 var Book = require('../models/book');
@@ -28,12 +30,13 @@ router.post('/book/add', function(req, res, next) {
   newBook.title = req.body.title;
   newBook.author = req.body.author;
   newBook.category = req.body.category;
+  newBook._id = shortid.generate(); // Custom short UID
 
   newBook.save(function(err, book) {
     // incase of an error return it
     if (err) return next(err);
     // return success feedback
-    res.status(201).send({ message: 'Book successfully added' });
+    res.status(201).send({ message: 'Success', _id: newBook._id });
   });
 });
 

@@ -1,9 +1,24 @@
 import React, { PureComponent } from 'react';
-import Api from 'src/helpers/Api';
-import bookApi from 'src/config/endpoints/book';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import * as bookActions from 'src/redux/book/actions';
+import Button from 'src/components/Button';
+import Input from 'src/components/Input';
+// import DataTable from 'src/components/DataTable';
 
+const { func } = PropTypes;
+
+@connect(
+  (state) => ({ book: state.book }),
+  {
+    addBook: bookActions.addBook,
+    fetchAllBooks: bookActions.fetchAllBooks,
+  },
+)
 export default class App extends PureComponent {
   static propTypes = {
+    addBook: func,
+    fetchAllBooks: func,
   };
 
   static contextTypes = {
@@ -24,28 +39,32 @@ export default class App extends PureComponent {
   }
 
   componentDidMount() {
-    Api.GET({ endpoint: bookApi.books })
-      .then((books) => console.log('books: ', books));
-
-    Api.POST({
-      endpoint: bookApi.addBook,
-      body: {
-        title: 'HAHAHA',
-        author: 'njan',
-        category: 'testing',
-      },
-    })
-    .then((response) => console.log('books: ', response));
+    this.props.fetchAllBooks();
   }
 
-  componentWillReceiveProps() {
+  onAddBtnClick = () => {
+    this.props.addBook({
+      title: 'Love in the Time of Cholera',
+      author: 'Gabriel Garcia Marquez',
+      category: 'Fiction',
+    });
   }
 
   render() {
     return (
-      <h1>
+      <div>
         HOOO HOOOOOOOHOOO HOOOO
-      </h1>
+        <div>
+          <Input placeholder="Book" />
+        </div>
+        <div>
+          <Input placeholder="Author" />
+        </div>
+        <div>
+          <Input placeholder="Category" />
+        </div>
+        <Button onClick={this.onAddBtnClick}> Add Book </Button>
+      </div>
     );
   }
 }

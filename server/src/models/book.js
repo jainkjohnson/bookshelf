@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 var BookSchema = new Schema({
 	title: String,
 	author: String,
-	category: String
+	category: String,
+	_id: String
 });
 
 // export our model to use in other files
