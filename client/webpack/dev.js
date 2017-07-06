@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-const PORT = 8000;
+const PORT = 4000;
 const DEV_URL = `http://localhost:${PORT}/`;
 
 console.log('DEV_URL : ', DEV_URL);
@@ -16,7 +16,7 @@ module.exports = {
     publicPath: DEV_URL,
     port: PORT,
     proxy: {
-      '/': 'http://localhost:8001' // Proxying to dev-api running at port 8001
+      '/': 'http://localhost:4001' // Proxying to dev-api running at port 4001
     }
   },
   output: {

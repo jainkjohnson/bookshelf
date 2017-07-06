@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styles from './styles.scss';
 
 const { arrayOf, object, any, bool, string } = PropTypes;
 
@@ -56,7 +57,7 @@ export default class DataTable extends PureComponent {
     const { className } = this.props;
 
     return (
-      <table className={className}>
+      <table className={`${styles.dataTable} ${className}`}>
         { this.props.noHead ? null : <thead><tr>{this.renderHeaders()}</tr></thead> }
         <tbody>{this.renderRows()}</tbody>
       </table>

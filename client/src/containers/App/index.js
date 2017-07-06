@@ -59,9 +59,6 @@ export default class App extends PureComponent {
     ];
     const data = Object.keys(this.props.book).reduce((acc, cur) => [...acc, this.props.book[cur]], []);
 
-    console.log('book: ', data);
-    console.log('Object.keys(data).length > 0 ', Object.keys(data).length > 0);
-
     return (
       <div>
         HOOO HOOOOOOOHOOO HOOOO
