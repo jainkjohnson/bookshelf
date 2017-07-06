@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import * as bookActions from 'src/redux/book/actions';
 import Button from 'src/components/Button';
 import Input from 'src/components/Input';
-// import DataTable from 'src/components/DataTable';
+import DataTable from 'src/components/DataTable';
 
-const { func } = PropTypes;
+const { func, object } = PropTypes;
 
 @connect(
   (state) => ({ book: state.book }),
@@ -19,6 +19,7 @@ export default class App extends PureComponent {
   static propTypes = {
     addBook: func,
     fetchAllBooks: func,
+    book: object,
   };
 
   static contextTypes = {
@@ -44,13 +45,23 @@ export default class App extends PureComponent {
 
   onAddBtnClick = () => {
     this.props.addBook({
-      title: 'Love in the Time of Cholera',
-      author: 'Gabriel Garcia Marquez',
+      title: 'Astonishing The Gods',
+      author: 'Ben Okri',
       category: 'Fiction',
     });
   }
 
   render() {
+    const cols = [
+      { key: 'title', label: 'Title' },
+      { key: 'author', label: 'Author' },
+      { key: 'category', label: 'Category' },
+    ];
+    const data = Object.keys(this.props.book).reduce((acc, cur) => [...acc, this.props.book[cur]], []);
+
+    console.log('book: ', data);
+    console.log('Object.keys(data).length > 0 ', Object.keys(data).length > 0);
+
     return (
       <div>
         HOOO HOOOOOOOHOOO HOOOO
@@ -63,6 +74,7 @@ export default class App extends PureComponent {
         <div>
           <Input placeholder="Category" />
         </div>
+        <DataTable columns={cols} rows={data} />
         <Button onClick={this.onAddBtnClick}> Add Book </Button>
       </div>
     );
