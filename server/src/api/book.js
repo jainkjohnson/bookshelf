@@ -36,7 +36,10 @@ router.post('/book/add', function(req, res, next) {
     // incase of an error return it
     if (err) return next(err);
     // return success feedback
-    res.status(201).send({ message: 'Success', _id: newBook._id });
+    res.status(200).send({
+      message: 'Book successfully added',
+      _id: newBook._id
+    });
   });
 });
 
@@ -80,24 +83,18 @@ router.post('/book/add', function(req, res, next) {
 //   res.render('book/book-list');
 // });
 
-// router.post('/delete-book/:id', function(req, res, next) {
-//   Book.findOneAndRemove(
-//     { _id: req.params.id },
-//     function(err, book) {
-//       if (err) return next(err);
+router.delete('/book/delete/:id', function(req, res, next) {
+  Book.findOneAndRemove(
+    { _id: req.params.id },
+    function(err, book) {
+      if (err) return next(err);
 
-//       Book.find({}).exec(function(err, books) {
-//         if (err) return next(err);
-//         if (err) return next(err);
-
-//         res.render('book/book-list', {
-//           success: "Book successfully deleted",
-//           book: books
-//         });
-//       });
-//     }
-//   );
-// });
+      res.status(200).send({
+        message: 'Book successfully deleted'
+      });
+    }
+  );
+});
 
 // export routes that they be used in other files
 module.exports = router;

@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import appConfig from 'src/config/app';
 import * as bookActions from 'src/redux/book/actions';
 import Button from 'src/components/Button';
 import Input from 'src/components/Input';
 import DataTable from 'src/components/DataTable';
+import styles from './styles.scss';
 
 const { func, object } = PropTypes;
 
@@ -12,12 +14,14 @@ const { func, object } = PropTypes;
   (state) => ({ book: state.book }),
   {
     addBook: bookActions.addBook,
+    removeBook: bookActions.removeBook,
     fetchAllBooks: bookActions.fetchAllBooks,
   },
 )
 export default class App extends PureComponent {
   static propTypes = {
     addBook: func,
+    removeBook: func,
     fetchAllBooks: func,
     book: object,
   };
@@ -26,6 +30,7 @@ export default class App extends PureComponent {
   };
 
   static childContextTypes = {
+    reactIconBase: object,
   };
 
   static defaultProps = {
@@ -36,6 +41,9 @@ export default class App extends PureComponent {
 
   getChildContext() {
     return {
+      reactIconBase: {
+        size: appConfig.ICON_SIZE,
+      },
     };
   }
 
@@ -45,10 +53,19 @@ export default class App extends PureComponent {
 
   onAddBtnClick = () => {
     this.props.addBook({
-      title: 'Astonishing The Gods',
-      author: 'Ben Okri',
-      category: 'Fiction',
+      title: 'God Delusion',
+      author: 'Richard Dawkins',
+      category: 'Science',
     });
+  }
+
+  onEditClick = (item) => {
+    console.log('onEditClick : ', item);
+  }
+
+  onDeleteClick = (item) => {
+    this.props.removeBook(item._id);
+    console.log('onDeleteClick : ', item);
   }
 
   render() {
@@ -60,8 +77,7 @@ export default class App extends PureComponent {
     const data = Object.keys(this.props.book).reduce((acc, cur) => [...acc, this.props.book[cur]], []);
 
     return (
-      <div>
-        HOOO HOOOOOOOHOOO HOOOO
+      <div className={styles.bookshelfApp}>
         <div>
           <Input placeholder="Book" />
         </div>
@@ -71,8 +87,13 @@ export default class App extends PureComponent {
         <div>
           <Input placeholder="Category" />
         </div>
-        <DataTable columns={cols} rows={data} />
         <Button onClick={this.onAddBtnClick}> Add Book </Button>
+        <DataTable
+          columns={cols}
+          rows={data}
+          onRowEditClick={this.onEditClick}
+          onRowDeleteClick={this.onDeleteClick}
+        />
       </div>
     );
   }

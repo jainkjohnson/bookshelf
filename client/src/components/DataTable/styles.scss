@@ -1,22 +1,23 @@
 .dataTable {
   font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-  font-size: 12px;
+  font-size: 16px;
   margin: 10px;
-  width: 480px;
+  width: 600px;
   text-align: left;
   border-collapse: collapse;
-  background: #ddd;
+  box-shadow: 1px 1px 10px #888;
+  background: #eeeeee;
 
   th {
     padding: 12px;
-    font-weight: normal;
+    font-weight: bolder;
     font-size: 14px;
-    color: #222;
+    color: #111;
   }
 
   td {
     padding: 9px 12px;
-    color: #555;
+    color: #333;
     border-top: 1px solid #fff;
   }
 
@@ -26,12 +27,25 @@
 
   tbody {
     td {
-      background: #eee;
+      background: #f6f6f6;
     }
 
-    tr:hover td {
-      color: #339;
-      background: none;
+    tr {
+      .editIcon {
+        color: #ffa600;
+
+        &:hover {
+          color: #b37400;
+        }
+      }
+
+      .deleteIcon {
+        color: #ff6666;
+
+        &:hover {
+          color: #ff1a1a;
+        }
+      }
     }
   }
 }

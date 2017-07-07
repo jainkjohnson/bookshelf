@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import EditIcon from 'react-icons/lib/md/edit';
+import DeleteIcon from 'react-icons/lib/ti/delete';
 import styles from './styles.scss';
 
-const { arrayOf, object, any, bool, string } = PropTypes;
+const { arrayOf, object, any, bool, string, func } = PropTypes;
 
 export const DataRow = ({ children, header, ...other }) => {
   const Column = header ? 'th' : 'td';
@@ -32,6 +34,9 @@ export default class DataTable extends PureComponent {
     children: any,
     noHead: bool,
     className: string,
+    onRowHover: func,
+    onRowEditClick: func,
+    onRowDeleteClick: func,
   };
 
   renderHeaders = () => (
@@ -46,19 +51,61 @@ export default class DataTable extends PureComponent {
       <td key={index} data-label={colData.label}>{rowData[colData.key]}</td>)
   );
 
-  renderRows = () => (
-    this.props.rows
-      ? this.props.rows.map((item, index) =>
-        <tr key={index}>{this.renderCells(item)}</tr>)
-      : this.props.children
-  );
+  renderRows = () => {
+    const {
+      rows,
+      children,
+      onRowHover,
+      onRowEditClick,
+      onRowDeleteClick,
+    } = this.props;
+
+    if (rows) {
+      return rows.map((item, index) => {
+        const rowProps = { key: index };
+
+        if (onRowHover) {
+          rowProps.onMouseOver = () => onRowHover(item);
+        }
+
+        return (
+          <tr {...rowProps} >
+            {this.renderCells(item)}
+            {
+              onRowEditClick &&
+              <td>
+                <EditIcon
+                  className={styles.editIcon}
+                  onClick={() => onRowEditClick(item)}
+                />
+              </td>
+            }
+            {
+              onRowDeleteClick &&
+              <td>
+                <DeleteIcon
+                  className={styles.deleteIcon}
+                  onClick={() => onRowDeleteClick(item)}
+                />
+              </td>
+            }
+          </tr>
+        );
+      });
+    }
+
+    return children;
+  }
 
   render() {
-    const { className } = this.props;
+    const { className, noHead } = this.props;
 
     return (
       <table className={`${styles.dataTable} ${className}`}>
-        { this.props.noHead ? null : <thead><tr>{this.renderHeaders()}</tr></thead> }
+        {
+          !noHead &&
+          <thead><tr>{this.renderHeaders()}</tr></thead>
+        }
         <tbody>{this.renderRows()}</tbody>
       </table>
     );

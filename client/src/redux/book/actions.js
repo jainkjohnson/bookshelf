@@ -14,8 +14,11 @@ export function fetchAllBooks() {
 
 export function removeBook(id) {
   return {
-    type: REMOVE_BOOK,
     id,
+    asyncType: REMOVE_BOOK,
+    promise: (Api) => Api.DELETE({
+      endpoint: `${bookApi.deleteBook}/${id}`,
+    }),
   };
 }
 

@@ -13,9 +13,11 @@ export default function reducer(state = initialState, action = {}) {
         [action.result._id]: action.book,
       };
     case REMOVE_BOOK:
-      return {
-        ...state,
-      };
+      const currentState = { ...state };
+
+      delete currentState[action.id];
+
+      return currentState;
     case FETCH_ALL_BOOKS:
       const allBooks = action.result || [];
       const newState = allBooks.reduce((acc, cur) => ({
