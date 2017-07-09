@@ -1,0 +1,49 @@
+.dataTable {
+  margin: 10px;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  box-shadow: 1px 1px 10px #888;
+  background: #eeeeee;
+
+  th {
+    padding: 12px;
+    font-weight: bolder;
+    font-size: 14px;
+    color: #111;
+  }
+
+  td {
+    padding: 9px 12px;
+    color: #333;
+    border-top: 1px solid #fff;
+  }
+
+  tfoot td {
+    font-size: 11px;
+  }
+
+  tbody {
+    td {
+      background: #f6f6f6;
+    }
+
+    tr {
+      .editIcon {
+        color: #ffa600;
+
+        &:hover {
+          color: #b37400;
+        }
+      }
+
+      .deleteIcon {
+        color: #ff6666;
+
+        &:hover {
+          color: #ff1a1a;
+        }
+      }
+    }
+  }
+}

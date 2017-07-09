@@ -3,9 +3,11 @@ var Schema = mongoose.Schema;
 
 // creating the book schema with 3 properties
 var BookSchema = new Schema({
-	title: String,
-	author: String,
-	category: String
+  title: String,
+  author: String,
+  category: String,
+  rating: Number,
+  _id: String
 });
 
 // export our model to use in other files

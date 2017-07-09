@@ -6,11 +6,11 @@ var bodyParser = require('body-parser');
 // needed for manipulating the database
 var mongoose = require('mongoose');
 // get our port and database settings
-var secret = require('./secret/secret');
+var config = require('./src/config');
 // get our book schema
-var Book = require('./models/book');
+var Book = require('./src/models/book');
 // get our routes
-var homeRoutes = require('./routes/main');
+var api = require('./src/api/book');
 // needed for logging
 var logger = require('morgan');
 // needed for the view
@@ -18,7 +18,7 @@ var ejs = require('ejs');
 var engine = require('ejs-mate');
 
 // establish database connection
-mongoose.connect(secret.database, function(err){
+mongoose.connect(config.databaseURL, function(err){
 	// incase of an error return it
 	if(err) throw err;
 	console.log("Connected to the database");
@@ -38,13 +38,13 @@ app.use(bodyParser.urlencoded({
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 
-// use our routes
-app.use(homeRoutes);
+// use our APIs
+app.use(api);
 
 // setting up the server's listening port
-app.listen(secret.port, function(err){
+app.listen(config.apiPort, function(err){
 	// incase of an error return it
 	if (err) throw err;
 	// keep the user aware of the status of the server
-	console.log("Server running on port:", secret.port);
+	console.log("Server running on port:", config.apiPort);
 });
