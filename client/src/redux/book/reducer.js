@@ -1,6 +1,7 @@
 import {
   initialState,
   ADD_BOOK,
+  UPDATE_BOOK,
   REMOVE_BOOK,
   FETCH_ALL_BOOKS,
 } from './constants';
@@ -10,7 +11,15 @@ export default function reducer(state = initialState, action = {}) {
     case ADD_BOOK:
       return {
         ...state,
-        [action.result._id]: action.book,
+        [action.result._id]: {
+          ...action.book,
+          _id: action.result._id,
+        },
+      };
+    case UPDATE_BOOK:
+      return {
+        ...state,
+        [action.book._id]: action.result.book,
       };
     case REMOVE_BOOK:
       const currentState = { ...state };

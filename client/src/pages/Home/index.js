@@ -1,25 +1,36 @@
+// 3rd-party libraries
 import React, { PureComponent } from 'react';
 import { func, object } from 'prop-types';
 import { connect } from 'react-redux';
+// config
 import appConfig from 'src/config/app';
+// redux actions
 import * as bookActions from 'src/redux/book/actions';
+// components
 import DataTable from 'src/components/DataTable';
+import Modal from 'src/components/Modal';
+import SvgIcon from 'src/components/SvgIcon';
 import BasicInputForm from 'src/components/Forms/BasicInputForm';
+// scss styles
 import styles from './styles.scss';
 
 @connect(
   (state) => ({ book: state.book }),
   {
     addBook: bookActions.addBook,
+    updateBook: bookActions.updateBook,
     removeBook: bookActions.removeBook,
     fetchAllBooks: bookActions.fetchAllBooks,
   },
 )
 export default class App extends PureComponent {
   static propTypes = {
+    // redux actions
     addBook: func,
+    updateBook: func,
     removeBook: func,
     fetchAllBooks: func,
+    // from redux state
     book: object,
   };
 
@@ -33,12 +44,9 @@ export default class App extends PureComponent {
   };
 
   state = {
+    editBookId: '',
+    showBookFormModal: false,
   };
-
-  getChildContext() {
-    return {
-    };
-  }
 
   componentDidMount() {
     this.props.fetchAllBooks();
@@ -47,17 +55,30 @@ export default class App extends PureComponent {
   componentWillReceiveProps() {
   }
 
-  onAddBtnClick = (book) => {
-    this.props.addBook(book);
+  onSubmitClick = (book) => {
+    if (this.state.editBookId) {
+      this.props.updateBook({ ...book, _id: this.state.editBookId });
+    } else {
+      this.props.addBook(book);
+    }
   }
 
   onEditClick = (item) => {
-    console.log('onEditClick : ', item);
+    this.setState({ editBookId: item._id });
+    this.toggleBookFormModal();
+  }
+
+  onCancelEdit = () => {
+    this.setState({ editBookId: '' });
+    this.toggleBookFormModal();
   }
 
   onDeleteClick = (item) => {
     this.props.removeBook(item._id);
-    console.log('onDeleteClick : ', item);
+  }
+
+  toggleBookFormModal = () => {
+    this.setState({ showBookFormModal: !this.state.showBookFormModal });
   }
 
   render() {
@@ -65,6 +86,7 @@ export default class App extends PureComponent {
       { key: 'title', label: 'Title' },
       { key: 'author', label: 'Author' },
       { key: 'category', label: 'Category' },
+      { key: 'rating', label: 'Rating' },
     ];
     const data = Object.keys(this.props.book).reduce((acc, cur) => [...acc, this.props.book[cur]], []);
 
@@ -89,10 +111,30 @@ export default class App extends PureComponent {
             onRowEditClick={this.onEditClick}
             onRowDeleteClick={this.onDeleteClick}
           />
-          <BasicInputForm
-            onSubmit={this.onAddBtnClick}
-            fieldNames={appConfig.BOOK_FIELDS}
-          />
+          <div className={styles.floatingAddButton}>
+            <SvgIcon
+              name="plus"
+              className={styles.plusIcon}
+              onClick={this.toggleBookFormModal}
+            />
+          </div>
+          {
+            this.state.showBookFormModal &&
+            <Modal
+              onClose={
+                this.state.editBookId
+                ? this.onCancelEdit
+                : this.toggleBookFormModal
+              }
+              body={
+                <BasicInputForm
+                  onSubmit={this.onSubmitClick}
+                  fieldNames={appConfig.BOOK_FIELDS}
+                  fieldValues={this.props.book[this.state.editBookId]}
+                />
+              }
+            />
+          }
         </article>
 
         <footer>

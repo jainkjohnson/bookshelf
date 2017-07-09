@@ -37,6 +37,36 @@ footer {
   text-decoration: none;
 }
 
+.floatingAddButton {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #339966;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  cursor: pointer;
+  box-shadow: 0px 2px 5px #666;
+
+  &:hover {
+    background: #336666;
+  }
+
+  .plusIcon {
+    color: #000;
+    position: absolute;
+    height: 35px;
+    width: 35px;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: block;
+    text-align: center;
+    line-height: 55px;
+    font-weight: 300;
+  }
+}
+
 @media all and (min-width: 768px) {
   .nav {
     text-align: left;

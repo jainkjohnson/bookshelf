@@ -30,6 +30,7 @@ router.post('/book/add', function(req, res, next) {
   newBook.title = req.body.title;
   newBook.author = req.body.author;
   newBook.category = req.body.category;
+  newBook.rating = req.body.rating;
   newBook._id = shortid.generate(); // Custom short UID
 
   newBook.save(function(err, book) {
@@ -56,28 +57,32 @@ router.post('/book/add', function(req, res, next) {
 //   });
 // });
 
-// router.post('/update-book/:id', function(req, res, next) {
-//   // find a book to update
-//   Book.findOneAndUpdate(
-//     { _id: req.params.id },
-//     {
-//       $set: {
-//         title: req.body.title,
-//         author: req.body.author,
-//         category: req.body.category
-//       }
-//     },
-//     { upsert: true },
-//     function(err, newBook) {
-//       if (err) return next(err);
+router.put('/book/update/:id', function(req, res, next) {
+  // find a book to update
+  Book.findOneAndUpdate(
+    { _id: req.params.id },
+    {
+      $set: {
+        title: req.body.title,
+        author: req.body.author,
+        category: req.body.category,
+        rating: req.body.rating
+      }
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+    function(err, newBook) {
+      if (err) return next(err);
 
-//       res.render('book/edit-book', {
-//         success: 'Record successfully updated',
-//         book: newBook
-//       });
-//     }
-//   );
-// });
+      res.status(200).send({
+        success: 'Book successfully updated',
+        book: newBook
+      });
+    }
+  );
+});
 
 // router.get('/delete-book/:id', function(req, res, next) {
 //   res.render('book/book-list');

@@ -7,6 +7,13 @@ import styles from './styles.scss';
 
 const { func, array, object } = PropTypes;
 
+function mapFieldPropsToState(fieldNames, fieldValues) {
+  return fieldNames.reduce(
+    (acc, field) => ({ ...acc, [field]: fieldValues[field] || '' }),
+    {},
+  );
+}
+
 export default class BasicInputForm extends PureComponent {
   static propTypes = {
     onSubmit: func,
@@ -23,13 +30,20 @@ export default class BasicInputForm extends PureComponent {
     super(props);
     const { fieldNames, fieldValues } = this.props;
 
-    this.state = fieldNames.reduce(
-      (acc, field) => ({ ...acc, [field]: fieldValues[field] || '' }),
-      {},
-    );
+    this.state = mapFieldPropsToState(fieldNames, fieldValues);
   }
 
   componentDidMount() {
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { fieldValues: curFieldValues, fieldNames } = this.props;
+    const { fieldValues: nextFieldValues } = nextProps;
+
+    // [TODO] Optimise this check
+    if (curFieldValues !== nextFieldValues) {
+      this.setState(mapFieldPropsToState(fieldNames, nextFieldValues));
+    }
   }
 
   onInputChange = (ev) => {
@@ -63,7 +77,7 @@ export default class BasicInputForm extends PureComponent {
           onClick={this.onSubmitClick}
           preventMultipleClicks
         >
-          Add Book
+          Submit
         </Button>
       </div>
     );
