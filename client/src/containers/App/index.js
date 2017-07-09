@@ -5,7 +5,7 @@ import appConfig from 'src/config/app';
 import * as bookActions from 'src/redux/book/actions';
 import Button from 'src/components/Button';
 import Input from 'src/components/Input';
-import DataTable from 'src/components/DataTable';
+import Home from 'src/pages/Home';
 import styles from './styles.scss';
 
 const { func, object } = PropTypes;
@@ -21,9 +21,6 @@ const { func, object } = PropTypes;
 export default class App extends PureComponent {
   static propTypes = {
     addBook: func,
-    removeBook: func,
-    fetchAllBooks: func,
-    book: object,
   };
 
   static contextTypes = {
@@ -48,7 +45,6 @@ export default class App extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.fetchAllBooks();
   }
 
   onAddBtnClick = () => {
@@ -59,23 +55,7 @@ export default class App extends PureComponent {
     });
   }
 
-  onEditClick = (item) => {
-    console.log('onEditClick : ', item);
-  }
-
-  onDeleteClick = (item) => {
-    this.props.removeBook(item._id);
-    console.log('onDeleteClick : ', item);
-  }
-
   render() {
-    const cols = [
-      { key: 'title', label: 'Title' },
-      { key: 'author', label: 'Author' },
-      { key: 'category', label: 'Category' },
-    ];
-    const data = Object.keys(this.props.book).reduce((acc, cur) => [...acc, this.props.book[cur]], []);
-
     return (
       <div className={styles.bookshelfApp}>
         <div>
@@ -88,12 +68,7 @@ export default class App extends PureComponent {
           <Input placeholder="Category" />
         </div>
         <Button onClick={this.onAddBtnClick}> Add Book </Button>
-        <DataTable
-          columns={cols}
-          rows={data}
-          onRowEditClick={this.onEditClick}
-          onRowDeleteClick={this.onDeleteClick}
-        />
+        <Home />
       </div>
     );
   }
