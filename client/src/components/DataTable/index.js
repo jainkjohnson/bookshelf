@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import EditIcon from 'react-icons/lib/md/edit';
-import DeleteIcon from 'react-icons/lib/ti/delete';
+import SvgIcon from 'src/components/SvgIcon';
+import Rating from 'src/components/Rating';
 import styles from './styles.scss';
 
 const { arrayOf, object, any, bool, string, func } = PropTypes;
@@ -47,8 +47,15 @@ export default class DataTable extends PureComponent {
   );
 
   renderCells = (rowData) => (
-    this.props.columns.map((colData, index) =>
-      <td key={index} data-label={colData.label}>{rowData[colData.key]}</td>)
+    this.props.columns.map((colData, index) => (
+      <td key={index} data-label={colData.label}>
+        {
+          colData.key === 'rating'
+            ? <Rating key={index} value={rowData[colData.key]} maximum={5} />
+            : rowData[colData.key]
+        }
+      </td>
+    ))
   );
 
   renderRows = () => {
@@ -74,7 +81,8 @@ export default class DataTable extends PureComponent {
             {
               onRowEditClick &&
               <td>
-                <EditIcon
+                <SvgIcon
+                  name="edit"
                   className={styles.editIcon}
                   onClick={() => onRowEditClick(item)}
                 />
@@ -83,7 +91,8 @@ export default class DataTable extends PureComponent {
             {
               onRowDeleteClick &&
               <td>
-                <DeleteIcon
+                <SvgIcon
+                  name="delete"
                   className={styles.deleteIcon}
                   onClick={() => onRowDeleteClick(item)}
                 />

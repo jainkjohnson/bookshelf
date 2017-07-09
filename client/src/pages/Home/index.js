@@ -111,12 +111,8 @@ export default class App extends PureComponent {
             onRowEditClick={this.onEditClick}
             onRowDeleteClick={this.onDeleteClick}
           />
-          <div className={styles.floatingAddButton}>
-            <SvgIcon
-              name="plus"
-              className={styles.plusIcon}
-              onClick={this.toggleBookFormModal}
-            />
+          <div className={styles.floatingAddButton} onClick={this.toggleBookFormModal}>
+            <SvgIcon name="plus" className={styles.plusIcon} />
           </div>
           {
             this.state.showBookFormModal &&

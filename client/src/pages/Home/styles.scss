@@ -41,15 +41,14 @@ footer {
   width: 55px;
   height: 55px;
   border-radius: 50%;
-  background: #339966;
+  background: #00cc66;
   position: fixed;
-  bottom: 30px;
+  top: 30px;
   right: 30px;
   cursor: pointer;
-  box-shadow: 0px 2px 5px #666;
 
   &:hover {
-    background: #336666;
+    background: #00bb66;
   }
 
   .plusIcon {
