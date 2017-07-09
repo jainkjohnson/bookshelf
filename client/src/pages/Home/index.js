@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import { func, object } from 'prop-types';
 import { connect } from 'react-redux';
+import appConfig from 'src/config/app';
 import * as bookActions from 'src/redux/book/actions';
 import DataTable from 'src/components/DataTable';
+import BasicInputForm from 'src/components/Forms/BasicInputForm';
 import styles from './styles.scss';
 
 @connect(
@@ -45,6 +47,10 @@ export default class App extends PureComponent {
   componentWillReceiveProps() {
   }
 
+  onAddBtnClick = (book) => {
+    this.props.addBook(book);
+  }
+
   onEditClick = (item) => {
     console.log('onEditClick : ', item);
   }
@@ -83,10 +89,23 @@ export default class App extends PureComponent {
             onRowEditClick={this.onEditClick}
             onRowDeleteClick={this.onDeleteClick}
           />
+          <BasicInputForm
+            onSubmit={this.onAddBtnClick}
+            fieldNames={appConfig.BOOK_FIELDS}
+          />
         </article>
 
         <footer>
-          <p>Bookshelf <a target="_blank" href="https://github.com/free-soul/bookshelf">source code</a></p>
+          <p>
+            Bookshelf&nbsp;
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/free-soul/bookshelf"
+            >
+              source code
+            </a>
+          </p>
           Copyright &copy; Yadhu Kiran
         </footer>
       </div>
