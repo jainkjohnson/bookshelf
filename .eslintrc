@@ -156,14 +156,9 @@
     "no-undef": 2,
     "no-undef-init": 2,
     "no-underscore-dangle": [2, { "allow": [
-      "_this",
-      "_load",
-      "_type",
-      "_detect",
       "_id",
       "__DEVELOPMENT__",
-      "__CLIENT__",
-      "__DEVTOOLS__"
+      "__REDUX_DEVTOOLS_EXTENSION__"
     ] }],
     "no-unneeded-ternary": 2,
     "no-unreachable": 2,

@@ -9,12 +9,18 @@ import App from 'src/containers/App';
 import reducers from 'src/redux/reducers';
 
 const middlewares = [asyncMiddleware];
-const composedEnhancers = compose(
-  applyMiddleware(...middlewares),
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), // eslint-disable-line no-underscore-dangle
-);
+let enhancers;
 
-const store = createStore(reducers, composedEnhancers);
+if (window.__REDUX_DEVTOOLS_EXTENSION__) {
+  enhancers = compose(
+    applyMiddleware(...middlewares),
+    window.__REDUX_DEVTOOLS_EXTENSION__(),
+  );
+} else {
+  enhancers = applyMiddleware(...middlewares);
+}
+
+const store = createStore(reducers, enhancers);
 
 // Create an enhanced history that syncs navigation events with the store
 const history = syncHistoryWithStore(browserHistory, store);
