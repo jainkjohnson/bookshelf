@@ -16,11 +16,6 @@ router.get('/books', function(req, res, next) {
   });
 });
 
-// // switch to the add-book view
-// router.get('/book', function(req, res, next) {
-//   res.render('book/add-book', { message: "" });
-// })
-
 // POST or add a new book
 router.post('/book/add', function(req, res, next) {
   // create a new book instance
@@ -43,19 +38,6 @@ router.post('/book/add', function(req, res, next) {
     });
   });
 });
-
-// router.get('/update-book/:id', function(req, res, next) {
-//     // return a single book
-//   Book.findOne({ _id: req.params.id }).exec(function(err, book) {
-//     // return an error message when it occurs
-//     if (err) return next(err);
-//     // return the single book
-//     res.render('book/edit-book', {
-//       book: book,
-//       success: ""
-//     });
-//   });
-// });
 
 router.put('/book/update/:id', function(req, res, next) {
   // find a book to update
@@ -83,10 +65,6 @@ router.put('/book/update/:id', function(req, res, next) {
     }
   );
 });
-
-// router.get('/delete-book/:id', function(req, res, next) {
-//   res.render('book/book-list');
-// });
 
 router.delete('/book/delete/:id', function(req, res, next) {
   Book.findOneAndRemove(

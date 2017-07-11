@@ -96,13 +96,7 @@ export default class App extends PureComponent {
           <h1>Bookshelf</h1>
         </header>
 
-        <nav className={styles.nav}>
-          <ul>
-            <li><a>London</a></li>
-            <li><a>Paris</a></li>
-            <li><a>Tokyo</a></li>
-          </ul>
-        </nav>
+        <nav className={styles.nav} />
 
         <article className={styles.article}>
           <DataTable

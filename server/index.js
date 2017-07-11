@@ -13,9 +13,6 @@ var Book = require('./src/models/book');
 var api = require('./src/api/book');
 // needed for logging
 var logger = require('morgan');
-// needed for the view
-var ejs = require('ejs');
-var engine = require('ejs-mate');
 
 // establish database connection
 mongoose.connect(config.databaseURL, function(err){
@@ -33,10 +30,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
-
-// define the view
-app.engine('ejs', engine);
-app.set('view engine', 'ejs');
 
 // use our APIs
 app.use(api);
