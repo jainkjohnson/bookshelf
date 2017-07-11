@@ -17,6 +17,7 @@
     "bcrypt": "^1.0.2",
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
+    "express-session": "^1.15.3",
     "mongoose": "^4.4.19",
     "morgan": "^1.7.0",
     "prop-types": "^15.5.10",

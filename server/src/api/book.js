@@ -2,7 +2,6 @@
 var router = require('express').Router();
 var shortid = require('shortid');
 
-
 // require our book Schema
 var Book = require('../models/book');
 

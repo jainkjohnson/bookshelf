@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
+var codes = require('../config/codes');
 
 var UserSchema = new mongoose.Schema({
   email: {
@@ -38,4 +39,33 @@ UserSchema.pre('save', function (next) {
   })
 });
 
-module.exports = mongoose.model('User', UserSchema);
+//authenticate input against database
+UserSchema.statics.authenticate = function (email, password, callback) {
+  User.findOne({ email: email })
+    .exec(function (err, user) {
+      if (err) {
+        return callback(err)
+      } else if (!user) {
+        var err = new Error(codes.USER.E_EMAIL);
+        err.customgMsg = codes.USER.E_EMAIL;
+        return callback(err);
+      }
+
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result === true) {
+          return callback(null, user);
+        } else {
+          var err = new Error(codes.USER.E_PWD);
+          err.customgMsg = codes.USER.E_PWD;
+          return callback(err);
+        }
+      })
+    });
+}
+
+/**
+ * The model variable created here is used inside the method
+ * UserSchema.statics.authenticate (hoisted); [TODO] rethink
+ */
+const User = mongoose.model('User', UserSchema);
+module.exports = User;

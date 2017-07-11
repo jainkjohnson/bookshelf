@@ -1,6 +1,8 @@
 // needed for routes and running the Web server
 var express = require('express');
 var app = express();
+// needed for tracking logins
+var session = require('express-session');
 // needed for passing content from views/urls to node
 var bodyParser = require('body-parser');
 // needed for manipulating the database
@@ -30,6 +32,13 @@ app.use(bodyParser.json());
 // allows us to give and use elements through url
 app.use(bodyParser.urlencoded({
 	extended: true
+}));
+
+// use sessions for tracking logins
+app.use(session({
+  secret: 'SOME SECRET KEY TO ENCRYPT SESSION_ID',
+  resave: true,
+  saveUninitialized: false
 }));
 
 // use our APIs

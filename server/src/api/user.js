@@ -1,7 +1,11 @@
 var router = require('express').Router();
+var codes = require('../config/codes');
 var User = require('../models/user');
 
-router.post('/login', function(req, res, next) {
+/**
+ * New user Registration
+ */
+router.post('/register', function(req, res, next) {
   if (
     req.body.email &&
     req.body.username &&
@@ -25,19 +29,39 @@ router.post('/login', function(req, res, next) {
             err.errmsg.lastIndexOf(endStr)
           );
 
-          return res.status(400).send({ message: dupField + ' already exists' });
+          return res.status(400).send({
+            message: codes.COMMON.E_DUP,
+            field: dupField
+          });
         }
 
         // Unhandled error
         return next(err);
       }
 
-      return res.status(200).send({ message: 'Sign-up successfull' });
+      req.session.userId = user._id;
+      return res.status(200).send({ message: codes.USER.S_REG });
     });
   } else {
-    return res.status(400).send({ message: 'Invalid request body' });
+    return res.status(400).send({ message: codes.COMMON.E_BODY });
   }
 });
+
+/**
+ * Existing user Login
+ */
+router.post('/login', function(req, res, next) {
+  User.authenticate(req.body.email, req.body.password, function (error, user) {
+    if (error || !user) {
+      return res.status(401).send({
+        message: error.customgMsg || codes.USER.E_EMAIL + ' or ' + codes.USER.E_PWD
+      });
+    } else {
+      req.session.userId = user._id;
+      return res.status(200).send({ message: codes.USER.S_LOGIN });
+    }
+  });
+})
 
 // export routes that they be used in other files
 module.exports = router;
