@@ -17,7 +17,7 @@ router.get('/books', function(req, res, next) {
 });
 
 // POST or add a new book
-router.post('/book/add', function(req, res, next) {
+router.post('/add', function(req, res, next) {
   // create a new book instance
   var newBook = new Book();
 
@@ -39,7 +39,7 @@ router.post('/book/add', function(req, res, next) {
   });
 });
 
-router.put('/book/update/:id', function(req, res, next) {
+router.put('/update/:id', function(req, res, next) {
   // find a book to update
   Book.findOneAndUpdate(
     { _id: req.params.id },
@@ -66,7 +66,7 @@ router.put('/book/update/:id', function(req, res, next) {
   );
 });
 
-router.delete('/book/delete/:id', function(req, res, next) {
+router.delete('/delete/:id', function(req, res, next) {
   Book.findOneAndRemove(
     { _id: req.params.id },
     function(err, book) {

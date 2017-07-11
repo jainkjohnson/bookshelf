@@ -10,7 +10,8 @@ var config = require('./src/config');
 // get our book schema
 var Book = require('./src/models/book');
 // get our routes
-var api = require('./src/api/book');
+var bookApi = require('./src/api/book');
+var userApi = require('./src/api/user');
 // needed for logging
 var logger = require('morgan');
 
@@ -32,7 +33,8 @@ app.use(bodyParser.urlencoded({
 }));
 
 // use our APIs
-app.use(api);
+app.use('/user', userApi);
+app.use('/book', bookApi);
 
 // setting up the server's listening port
 app.listen(config.apiPort, function(err){
