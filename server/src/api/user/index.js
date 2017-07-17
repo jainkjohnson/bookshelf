@@ -1,6 +1,6 @@
 var router = require('express').Router();
-var codes = require('../config/codes');
-var User = require('../models/user');
+var codes = require('../../config/codes');
+var User = require('../../models/user');
 
 /**
  * New user Registration
@@ -11,11 +11,11 @@ router.post('/register', function(req, res, next) {
     req.body.username &&
     req.body.password
   ) {
-
     var userData = {
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
+      books: {}
     }
 
     //use schema.create to insert data into the db
@@ -30,8 +30,7 @@ router.post('/register', function(req, res, next) {
           );
 
           return res.status(400).send({
-            message: codes.COMMON.E_DUP,
-            field: dupField
+            error: dupField + ' ' + codes.COMMON.E_DUP,
           });
         }
 
@@ -43,7 +42,7 @@ router.post('/register', function(req, res, next) {
       return res.status(200).send({ message: codes.USER.S_REG });
     });
   } else {
-    return res.status(400).send({ message: codes.COMMON.E_BODY });
+    return res.status(400).send({ error: codes.COMMON.E_REQ_BODY });
   }
 });
 
@@ -54,7 +53,7 @@ router.post('/login', function(req, res, next) {
   User.authenticate(req.body.email, req.body.password, function (error, user) {
     if (error || !user) {
       return res.status(401).send({
-        message: error.customgMsg || codes.USER.E_EMAIL + ' or ' + codes.USER.E_PWD
+        error: error || codes.USER.E_EMAIL + ' or ' + codes.USER.E_PWD
       });
     } else {
       req.session.userId = user._id;
@@ -62,6 +61,22 @@ router.post('/login', function(req, res, next) {
     }
   });
 })
+
+/**
+ * Logout
+ */
+router.get('/logout', function(req, res, next) {
+  if (req.session) {
+    // delete session object
+    req.session.destroy(function(err) {
+      if (err) {
+        return next(err);
+      } else {
+        return res.status(200).send({ message: codes.USER.S_LOGOUT });
+      }
+    });
+  }
+});
 
 // export routes that they be used in other files
 module.exports = router;

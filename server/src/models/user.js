@@ -17,13 +17,9 @@ var UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: true
   },
-  books: {
-    haveRead: Array,
-    toBuy: Array,
-    toRead: Array
-  },
+  books: {}
 });
 
 //hashing a password before saving it to the database
@@ -39,25 +35,25 @@ UserSchema.pre('save', function (next) {
   })
 });
 
-//authenticate input against database
+/**
+ * Authenticate user credentials against database
+ */
 UserSchema.statics.authenticate = function (email, password, callback) {
   User.findOne({ email: email })
     .exec(function (err, user) {
       if (err) {
         return callback(err)
       } else if (!user) {
-        var err = new Error(codes.USER.E_EMAIL);
-        err.customgMsg = codes.USER.E_EMAIL;
-        return callback(err);
+        // Wrong email
+        return callback(codes.USER.E_EMAIL);
       }
 
       bcrypt.compare(password, user.password, function (err, result) {
         if (result === true) {
           return callback(null, user);
         } else {
-          var err = new Error(codes.USER.E_PWD);
-          err.customgMsg = codes.USER.E_PWD;
-          return callback(err);
+          // Wrong password
+          return callback(codes.USER.E_PWD);
         }
       })
     });
@@ -67,5 +63,5 @@ UserSchema.statics.authenticate = function (email, password, callback) {
  * The model variable created here is used inside the method
  * UserSchema.statics.authenticate (hoisted); [TODO] rethink
  */
-const User = mongoose.model('User', UserSchema);
+var User = mongoose.model('User', UserSchema);
 module.exports = User;

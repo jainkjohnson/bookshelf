@@ -9,8 +9,6 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 // get our port and database settings
 var config = require('./src/config');
-// get our book schema
-var Book = require('./src/models/book');
 // get our routes
 var bookApi = require('./src/api/book');
 var userApi = require('./src/api/user');
