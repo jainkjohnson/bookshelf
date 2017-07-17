@@ -22,7 +22,15 @@ router.get('/all_books', function(req, res, next) {
   });
 });
 
-// GET all user books
+ /**
+ * Get all books in user's Bookshelf
+ * @name getMyBooks
+ *
+ *    method: GET
+ *    endpoint: '/book/my_books'
+ *    requiresLogin: yes
+ *    response: Array  [{ _id: "bookId123", ...}, ...]
+ */
 router.get('/my_books', mw.requiresLogin, function(req, res, next) {
   var successCallback = function(userBooks) {
     var bookIds = Object.keys(userBooks);
@@ -47,6 +55,15 @@ router.get('/my_books', mw.requiresLogin, function(req, res, next) {
   return userThunks.getUserBooks(req.session, successCallback, next);
 });
 
+ /**
+ * Add book to `books` collection as well as user's Bookshelf
+ * @name addBook
+ *
+ *    method: POST
+ *    endpoint: '/book/add'
+ *    requiresLogin: yes
+ *    response: Object { message: "...", _id: "bookId123" }
+ */
 router.post('/add', mw.requiresLogin, function(req, res, next) {
   var successCallback = function(bookId) {
     userThunks.updateUserBookShelf(

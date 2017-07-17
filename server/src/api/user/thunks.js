@@ -2,7 +2,7 @@ var codes = require('../../config/codes');
 var User = require('../../models/user');
 
 /**
- *
+ * Update user's Bookshelf with new book details.
  * @param {Object} params
  * @param {String} params.bookId
  * @param {Object} params.reqBody
@@ -23,6 +23,7 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
 
       var userBooks = user.books || {};
       if (userBooks[bookId]) {
+        // The same book already exists in user's Bookshelf.
         // HTTP 409 Conflict
         onFailure({
           status: 409,
@@ -53,8 +54,9 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
 }
 
 /**
- *
+ * Get all books in user's Bookshelf
  * @param {Object} reqSession
+ * @param {String} reqSession.userId
  * @param {Function} onSuccess
  * @param {Function} onFailure
  */

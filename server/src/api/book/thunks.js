@@ -3,8 +3,8 @@ var codes = require('../../config/codes');
 var Book = require('../../models/book');
 
 /**
- *
- * @param {*} bookIds
+ * Searches `books` collection for books with specified Ids
+ * @param {Array} bookIds
  * @param {Function} onSuccess
  * @param {Function} onFailure
  */
@@ -20,7 +20,7 @@ function getBooksById(bookIds, onSuccess, onFailure) {
 }
 
 /**
- * Create a new book record in the collection
+ * Create a new book record in the `books` collection
  * @param {Object} reqBody
  * @param {Function} onSuccess
  * @param {Function} onFailure
@@ -41,9 +41,8 @@ function addNewBook(reqBody, onSuccess, onFailure) {
 }
 
 /**
- * Check if a book exists in the collection `book`
- * The search invokes `onSuccess` callback with book Id
- * if a record is found matching any of the below criteria:
+ * Check if a book exists in the `books` collection.
+ * Tries to find a book that matches the below criteria:
  *  - Matches `reqBody._id`
  *      OR
  *  - Matches `reqBody.title` && `reqBody.author`
