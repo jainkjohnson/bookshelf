@@ -19,6 +19,7 @@ module.exports = {
     // Success
     S_DEL: 'book successfully deleted',
     S_ADD: 'book successfully added',
+    S_UPD: 'book successfully update',
     // Errors
     E_NOT_FOUND: 'book not found'
   },

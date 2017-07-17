@@ -1,12 +1,15 @@
 var codes = require('../../config/codes');
 var User = require('../../models/user');
 
+var utils = require('../../utils');
+
 /**
  * Update user's Bookshelf with new book details.
  * @param {Object} params
  * @param {String} params.bookId
  * @param {Object} params.reqBody
  * @param {Object} params.reqSession
+ * @param {Boolean} params.overwrite
  * @param {Function} onSuccess
  * @param {Function} onFailure
  */
@@ -14,6 +17,7 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
   var bookId = params.bookId;
   var reqBody = params.reqBody;
   var reqSession = params.reqSession;
+  var overwrite = params.overwrite || false;
 
   return User.findOne(
     { _id: reqSession.userId },
@@ -22,7 +26,7 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
       if (err) return onFailure(err);
 
       var userBooks = user.books || {};
-      if (userBooks[bookId]) {
+      if (!overwrite && userBooks[bookId]) {
         // The same book already exists in user's Bookshelf.
         // HTTP 409 Conflict
         onFailure({
@@ -31,11 +35,11 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
         })
       } else {
         userBooks[bookId] = {
-          toRead: reqBody.toRead,
-          haveRead: reqBody.haveRead,
-          toBuy: reqBody.toBuy,
-          nowReading: reqBody.nowReading,
-          rating: reqBody.rating
+          toRead: utils.getObjOwnProp('toRead', reqBody, userBooks[bookId]),
+          haveRead: utils.getObjOwnProp('haveRead', reqBody, userBooks[bookId]),
+          toBuy: utils.getObjOwnProp('toBuy', reqBody, userBooks[bookId]),
+          nowReading: utils.getObjOwnProp('nowReading', reqBody, userBooks[bookId]),
+          rating: utils.getObjOwnProp('rating', reqBody, userBooks[bookId]),
         };
 
         return User.findOneAndUpdate(
@@ -45,7 +49,7 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
             // Unexpected DB error
             if (err) return onFailure(err);
 
-            onSuccess(bookId);
+            onSuccess(bookId, userBooks[bookId]);
           }
         );
       }

@@ -4,7 +4,7 @@ var router = require('express').Router();
 var shortid = require('shortid');
 // internal dependencies
 var codes = require('../../config/codes');
-var mw = require('../middlewares')
+var midWare = require('../middlewares')
 // Schemas
 var Book = require('../../models/book');
 var User = require('../../models/user');
@@ -29,20 +29,26 @@ router.get('/all_books', function(req, res, next) {
  *    method: GET
  *    endpoint: '/book/my_books'
  *    requiresLogin: yes
- *    response: Array  [{ _id: "bookId123", ...}, ...]
+ *    response:
+ *      {
+ *        result: [
+ *          { _id: "bookId123", ...},
+ *          ...
+ *        ]
+ *      }
  */
-router.get('/my_books', mw.requiresLogin, function(req, res, next) {
+router.get('/my_books', midWare.requiresLogin, function(req, res, next) {
   var successCallback = function(userBooks) {
     var bookIds = Object.keys(userBooks);
 
-    return bookThunks.getBooksById(
+    bookThunks.getBooksById(
       bookIds,
       // onSuccess callback
       function(books) {
         var conjoinedBooks = books.map(function(book) {
           // book.toJSON() is called to filter out inherited properties
           // of 'book' (as it is a mongo collection object)
-          return Object.assign({}, userBooks[book._id], book.toJSON());
+          return Object.assign({}, book.toJSON(), userBooks[book._id]);
         });
 
         res.send(conjoinedBooks);
@@ -52,7 +58,7 @@ router.get('/my_books', mw.requiresLogin, function(req, res, next) {
     );
   };
 
-  return userThunks.getUserBooks(req.session, successCallback, next);
+  userThunks.getUserBooks(req.session, successCallback, next);
 });
 
  /**
@@ -62,9 +68,13 @@ router.get('/my_books', mw.requiresLogin, function(req, res, next) {
  *    method: POST
  *    endpoint: '/book/add'
  *    requiresLogin: yes
- *    response: Object { message: "...", _id: "bookId123" }
+ *    response:
+ *      {
+ *        message: "...",
+ *        result: { _id: "bookId123" }
+ *      }
  */
-router.post('/add', mw.requiresLogin, function(req, res, next) {
+router.post('/add', midWare.requiresLogin, function(req, res, next) {
   var successCallback = function(bookId) {
     userThunks.updateUserBookShelf(
       // params
@@ -77,7 +87,7 @@ router.post('/add', mw.requiresLogin, function(req, res, next) {
       function(bookshelfBookId) {
         res.status(200).send({
           message: codes.BOOK.S_ADD,
-          _id: bookshelfBookId
+          result: { _id: bookshelfBookId }
         });
       },
       // failure callback
@@ -92,7 +102,7 @@ router.post('/add', mw.requiresLogin, function(req, res, next) {
     );
   };
 
-  return bookThunks.checkIfBookExists(
+  bookThunks.checkIfBookExists(
     // param
     req.body,
     // success callback
@@ -108,33 +118,51 @@ router.post('/add', mw.requiresLogin, function(req, res, next) {
   );
 });
 
-router.put('/update/:id', mw.requiresLogin, function(req, res, next) {
-  // find a book to update
-  Book.findOneAndUpdate(
-    { _id: req.params.id },
-    {
-      $set: {
-        title: req.body.title,
-        author: req.body.author,
-        category: req.body.category,
-      }
-    },
-    {
-      upsert: true,
-      new: true,
-    },
-    function(err, newBook) {
-      if (err) return next(err);
+ /**
+ * Add book to `books` collection as well as user's Bookshelf
+ * @name updateBook
+ *
+ *    method: PUT
+ *    endpoint: '/book/update/:id'
+ *    requiresLogin: yes
+ *    response:
+ *      {
+ *         message: "...",
+ *         result: { _id: "bookId123", ...}
+ *      }
+ */
+router.put('/update/:id', midWare.requiresLogin, function(req, res, next) {
+  var successCallback = function(newBook) {
+    userThunks.updateUserBookShelf(
+      {
+        reqBody: req.body,
+        reqSession: req.session,
+        bookId: newBook._id,
+        overwrite: true
+      },
+      function(bookId, newUserBook) {
+        res.status(200).send({
+          message: codes.BOOK.S_UPD,
+          result: Object.assign({}, newBook.toJSON(), newUserBook)
+        });
+      },
+      next
+    );
+  };
 
-      res.status(200).send({
-        success: 'Book successfully updated',
-        book: newBook
-      });
-    }
+  bookThunks.updateBook(
+    {
+      reqBody: req.body,
+      reqParams: req.params
+    },
+    // success callback
+    successCallback,
+    // failure callback
+    next
   );
 });
 
-router.delete('/delete/:id', mw.requiresLogin, function(req, res, next) {
+router.delete('/delete/:id', midWare.requiresLogin, function(req, res, next) {
   Book.findOneAndRemove(
     { _id: req.params.id },
     function(err, book) {

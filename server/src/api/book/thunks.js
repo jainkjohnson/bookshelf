@@ -9,7 +9,7 @@ var Book = require('../../models/book');
  * @param {Function} onFailure
  */
 function getBooksById(bookIds, onSuccess, onFailure) {
-  return Book.find({
+  Book.find({
     _id: { $in: bookIds }
   }).exec(function(err, books = []) {
     // Unexpected DB error
@@ -41,6 +41,41 @@ function addNewBook(reqBody, onSuccess, onFailure) {
 }
 
 /**
+ * Update an existing book record in the `books` collection
+ * If it doesn't exists, new record is created.
+ * @param {Object} params
+ * @param {Object} params.reqBody
+ * @param {Object} params.reqParams
+ * @param {Function} onSuccess
+ * @param {Function} onFailure
+ */
+function updateBook(params, onSuccess, onFailure) {
+  var reqBody = params.reqBody;
+  var reqParams = params.reqParams;
+
+  // find a book to update
+  Book.findOneAndUpdate(
+    { _id: reqParams.id },
+    {
+      $set: {
+        title: reqBody.title,
+        author: reqBody.author,
+        category: reqBody.category,
+      }
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+    function(err, newBook) {
+      if (err) return onFailure(err);
+
+      onSuccess(newBook);
+    }
+  );
+}
+
+/**
  * Check if a book exists in the `books` collection.
  * Tries to find a book that matches the below criteria:
  *  - Matches `reqBody._id`
@@ -55,7 +90,7 @@ function addNewBook(reqBody, onSuccess, onFailure) {
  * @param {Function} onFailure
  */
 function checkIfBookExists(reqBody, onSuccess, onFailure) {
-  return Book.findOne(
+  Book.findOne(
     {
       $or: [
         { _id: reqBody._id },
@@ -80,5 +115,6 @@ function checkIfBookExists(reqBody, onSuccess, onFailure) {
 module.exports = {
   checkIfBookExists,
   addNewBook,
-  getBooksById
+  getBooksById,
+  updateBook
 };
