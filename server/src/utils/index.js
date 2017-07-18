@@ -18,7 +18,7 @@ function getObjOwnProp(
 
 /**
  * Get object's won property values if they exists;
- * @param {String} propNames
+ * @param {Array} propNames
  * @param {Object} primObj
  * @param {Object} secObj
  */

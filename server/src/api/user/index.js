@@ -1,68 +1,71 @@
 const router = require('express').Router();
 // internal dependencies
 const codes = require('../../config/codes');
-// Schemas
-const User = require('../../models/user');
 // Thunks
 const userThunks = require('../user/thunks');
 
 /**
  * New user Registration
+ * @name registerUser
+ *
+ *    method: POST
+ *    endpoint: '/user/register'
+ *    request.body:
+ *      {
+ *        email: 'email@domain.com'
+ *        username: 'unique-username'
+ *        password: 'is_A_secret'
+ *      }
+ *    response:
+ *      {
+ *        message: "..."
+ *      }
  */
 router.post('/register', (req, res, next) => {
-  if (
-    req.body.email &&
-    req.body.username &&
-    req.body.password
-  ) {
-    const userData = {
-      email: req.body.email,
-      username: req.body.username,
-      password: req.body.password,
-      books: {}
-    };
-
-    // use schema.create to insert data into the db
-    User.create(userData, (err, user) => {
-      if (err) {
-        if (err.code === 11000) {
-          const startStr = 'index: ';
-          const endStr = '_1 dup key';
-          const dupField = err.errmsg.substring(
-            err.errmsg.indexOf(startStr) + startStr.length,
-            err.errmsg.lastIndexOf(endStr)
-          );
-
-          return res.status(400).send({
-            error: `${dupField} ${codes.COMMON.E_DUP}`,
-          });
-        }
-
-        // Unhandled error
-        return next(err);
+  userThunks.registerUser(
+    // param
+    req.body,
+    // success callback
+    (userId) => {
+      req.session.userId = userId;
+      res.status(200).send({ message: codes.USER.S_REG });
+    },
+    // error callback
+    (err) => {
+      if (err.status && err.error) {
+        return res.status(err.status).send({ error: err.error });
       }
 
-      req.session.userId = user._id;
-
-      return res.status(200).send({ message: codes.USER.S_REG });
-    });
-  } else {
-    return res.status(400).send({ error: codes.COMMON.E_REQ_BODY });
-  }
+      // Unexpected DB error
+      next(err);
+    }
+  );
 });
 
 /**
- * Existing user Login
+ * New user Registration
+ * @name registerUser
+ *
+ *    method: POST
+ *    endpoint: '/user/login'
+ *    request.body:
+ *      {
+ *        email: 'email@domain.com' || username: 'unique-username'
+ *        password: 'is_A_secret'
+ *      }
+ *    response:
+ *      {
+ *        message: "..."
+ *      }
  */
 router.post('/login', (req, res, next) => {
-  userThunks.authenticate(
+  userThunks.authenticateUser(
     // param
     req.body,
     // success callback
     (user) => {
       req.session.userId = user._id;
-
-      return res.status(200).send({ message: codes.USER.S_LOGIN });
+      res.status(200).send({ message: codes.USER.S_LOGIN });
     },
     // failure callback
     (err) => {
@@ -77,7 +80,15 @@ router.post('/login', (req, res, next) => {
 });
 
 /**
- * Logout
+ * New user Registration
+ * @name registerUser
+ *
+ *    method: GET
+ *    endpoint: '/user/logout'
+ *    response:
+ *      {
+ *        message: "..."
+ *      }
  */
 router.get('/logout', (req, res, next) => {
   if (req.session) {

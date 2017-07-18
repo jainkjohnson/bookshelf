@@ -12,6 +12,7 @@ module.exports = {
     S_LOGOUT: 'logout Success',
     // Errors
     E_EMAIL: 'wrong email',
+    E_USRNAME: 'wrong username',
     E_PWD: 'wrong password',
     E_AUTH: 'authentication failure'
   },
