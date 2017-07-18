@@ -1,36 +1,40 @@
-var router = require('express').Router();
-var codes = require('../../config/codes');
-var User = require('../../models/user');
+const router = require('express').Router();
+// internal dependencies
+const codes = require('../../config/codes');
+// Schemas
+const User = require('../../models/user');
+// Thunks
+const userThunks = require('../user/thunks');
 
 /**
  * New user Registration
  */
-router.post('/register', function(req, res, next) {
+router.post('/register', (req, res, next) => {
   if (
     req.body.email &&
     req.body.username &&
     req.body.password
   ) {
-    var userData = {
+    const userData = {
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
       books: {}
-    }
+    };
 
-    //use schema.create to insert data into the db
-    User.create(userData, function (err, user) {
+    // use schema.create to insert data into the db
+    User.create(userData, (err, user) => {
       if (err) {
         if (err.code === 11000) {
-          var startStr = 'index: ';
-          var endStr = '_1 dup key';
-          var dupField = err.errmsg.substring(
+          const startStr = 'index: ';
+          const endStr = '_1 dup key';
+          const dupField = err.errmsg.substring(
             err.errmsg.indexOf(startStr) + startStr.length,
             err.errmsg.lastIndexOf(endStr)
           );
 
           return res.status(400).send({
-            error: dupField + ' ' + codes.COMMON.E_DUP,
+            error: `${dupField} ${codes.COMMON.E_DUP}`,
           });
         }
 
@@ -39,6 +43,7 @@ router.post('/register', function(req, res, next) {
       }
 
       req.session.userId = user._id;
+
       return res.status(200).send({ message: codes.USER.S_REG });
     });
   } else {
@@ -49,31 +54,39 @@ router.post('/register', function(req, res, next) {
 /**
  * Existing user Login
  */
-router.post('/login', function(req, res, next) {
-  User.authenticate(req.body.email, req.body.password, function (error, user) {
-    if (error || !user) {
-      return res.status(401).send({
-        error: error || codes.USER.E_EMAIL + ' or ' + codes.USER.E_PWD
-      });
-    } else {
+router.post('/login', (req, res, next) => {
+  userThunks.authenticate(
+    // param
+    req.body,
+    // success callback
+    (user) => {
       req.session.userId = user._id;
+
       return res.status(200).send({ message: codes.USER.S_LOGIN });
+    },
+    // failure callback
+    (err) => {
+      if (err.status && err.error) {
+        return res.status(err.status).send({ error: err.error });
+      }
+
+      // unexpected error
+      next(err);
     }
-  });
-})
+  );
+});
 
 /**
  * Logout
  */
-router.get('/logout', function(req, res, next) {
+router.get('/logout', (req, res, next) => {
   if (req.session) {
     // delete session object
-    req.session.destroy(function(err) {
-      if (err) {
-        return next(err);
-      } else {
-        return res.status(200).send({ message: codes.USER.S_LOGOUT });
-      }
+    req.session.destroy((err) => {
+      // Unexpected DB error
+      if (err) return next(err);
+
+      res.status(200).send({ message: codes.USER.S_LOGOUT });
     });
   }
 });

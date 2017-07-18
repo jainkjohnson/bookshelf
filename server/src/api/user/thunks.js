@@ -1,7 +1,51 @@
-var codes = require('../../config/codes');
-var User = require('../../models/user');
+const bcrypt = require('bcrypt');
+const config = require('../../config');
+const codes = require('../../config/codes');
+const User = require('../../models/user');
+const utils = require('../../utils');
 
-var utils = require('../../utils');
+/**
+ * Authenticate user credentials against database
+ * @param {Object} reqBody
+ * @param {String} reqBody.email
+ * @param {String} reqBody.password
+ * @param {Function} onSuccess
+ * @param {Function} onFailure
+ */
+function authenticate(reqBody, onSuccess, onFailure) {
+  User.findOne(
+    { email: reqBody.email }
+  ).exec((err, user) => {
+    // Unexpected DB error
+    if (err) return onFailure(err);
+
+    if (!user) {
+      // No user record found for that email
+      return onFailure({
+        // HTTP 401 Unauthorized
+        status: 401,
+        error: codes.USER.E_EMAIL
+      });
+    }
+
+    bcrypt.compare(reqBody.password, user.password, (bcryptErr, result) => {
+      // Unexpected DB error
+      if (bcryptErr) return onFailure(bcryptErr);
+
+      if (result === true) {
+        // Password validation succeeded
+        return onSuccess(user);
+      }
+
+      // Wrong password
+      onFailure({
+        // HTTP 401 Unauthorized
+        status: 401,
+        error: codes.USER.E_PWD
+      });
+    });
+  });
+}
 
 /**
  * Update user's Bookshelf with new book details.
@@ -14,40 +58,39 @@ var utils = require('../../utils');
  * @param {Function} onFailure
  */
 function updateUserBookShelf(params, onSuccess, onFailure) {
-  var bookId = params.bookId;
-  var reqBody = params.reqBody;
-  var reqSession = params.reqSession;
-  var overwrite = params.overwrite || false;
+  const bookId = params.bookId;
+  const reqBody = params.reqBody;
+  const reqSession = params.reqSession;
+  const overwrite = params.overwrite || false;
 
   return User.findOne(
     { _id: reqSession.userId },
-    function(err, user) {
+    (userFindErr, user) => {
       // Unexpected DB error
-      if (err) return onFailure(err);
+      if (userFindErr) return onFailure(userFindErr);
 
-      var userBooks = user.books || {};
+      const userBooks = user.books || {};
+
       if (!overwrite && userBooks[bookId]) {
         // The same book already exists in user's Bookshelf.
         // HTTP 409 Conflict
         onFailure({
           status: 409,
-          error: codes.BOOKSHELF.E_BOOK_DUP
-        })
+          error: codes.BOOK.E_BOOKSHELF_DUP
+        });
       } else {
-        userBooks[bookId] = {
-          toRead: utils.getObjOwnProp('toRead', reqBody, userBooks[bookId]),
-          haveRead: utils.getObjOwnProp('haveRead', reqBody, userBooks[bookId]),
-          toBuy: utils.getObjOwnProp('toBuy', reqBody, userBooks[bookId]),
-          nowReading: utils.getObjOwnProp('nowReading', reqBody, userBooks[bookId]),
-          rating: utils.getObjOwnProp('rating', reqBody, userBooks[bookId]),
-        };
+        userBooks[bookId] = utils.getObjOwnProps(
+          config.USER_BOOK_SCHEMA_PROPS,
+          reqBody,
+          userBooks[bookId]
+        );
 
         return User.findOneAndUpdate(
           { _id: reqSession.userId },
           { $set: { books: userBooks } },
-          function(err) {
+          (updateErr) => {
             // Unexpected DB error
-            if (err) return onFailure(err);
+            if (updateErr) return onFailure(updateErr);
 
             onSuccess(bookId, userBooks[bookId]);
           }
@@ -65,7 +108,7 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
  * @param {Function} onFailure
  */
 function getUserBooks(reqSession, onSuccess, onFailure) {
-  return User.findOne({ _id: reqSession.userId }, function(err, user) {
+  return User.findOne({ _id: reqSession.userId }, (err, user) => {
     // Unexpected error
     if (err) return onFailure(err);
 
@@ -75,5 +118,6 @@ function getUserBooks(reqSession, onSuccess, onFailure) {
 
 module.exports = {
   updateUserBookShelf,
-  getUserBooks
+  getUserBooks,
+  authenticate
 };

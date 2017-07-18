@@ -21,10 +21,7 @@ module.exports = {
     S_ADD: 'book successfully added',
     S_UPD: 'book successfully update',
     // Errors
-    E_NOT_FOUND: 'book not found'
+    E_NOT_FOUND: 'book not found',
+    E_BOOKSHELF_DUP: 'book already exists in bookshelf'
   },
-  BOOKSHELF: {
-    // Errors
-    E_BOOK_DUP: 'book already exists in bookshelf'
-  }
 };

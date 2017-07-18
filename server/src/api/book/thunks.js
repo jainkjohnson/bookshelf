@@ -1,6 +1,5 @@
-var shortid = require('shortid');
-var codes = require('../../config/codes');
-var Book = require('../../models/book');
+const shortid = require('shortid');
+const Book = require('../../models/book');
 
 /**
  * Searches `books` collection for books with specified Ids
@@ -11,7 +10,7 @@ var Book = require('../../models/book');
 function getBooksById(bookIds, onSuccess, onFailure) {
   Book.find({
     _id: { $in: bookIds }
-  }).exec(function(err, books = []) {
+  }).exec((err, books = []) => {
     // Unexpected DB error
     if (err) return onFailure(err);
 
@@ -26,17 +25,18 @@ function getBooksById(bookIds, onSuccess, onFailure) {
  * @param {Function} onFailure
  */
 function addNewBook(reqBody, onSuccess, onFailure) {
-  var newBook = new Book();
+  const newBook = new Book();
+
   newBook.title = reqBody.title;
   newBook.author = reqBody.author;
   newBook.category = reqBody.category;
   newBook._id = shortid.generate();
 
-  newBook.save(function(err, book) {
+  newBook.save((err, book) => {
     // Unexpected DB error
     if (err) return onFailure(err);
 
-    onSuccess(newBook._id);
+    onSuccess(book._id);
   });
 }
 
@@ -50,8 +50,8 @@ function addNewBook(reqBody, onSuccess, onFailure) {
  * @param {Function} onFailure
  */
 function updateBook(params, onSuccess, onFailure) {
-  var reqBody = params.reqBody;
-  var reqParams = params.reqParams;
+  const reqBody = params.reqBody;
+  const reqParams = params.reqParams;
 
   // find a book to update
   Book.findOneAndUpdate(
@@ -67,7 +67,7 @@ function updateBook(params, onSuccess, onFailure) {
       upsert: true,
       new: true,
     },
-    function(err, newBook) {
+    (err, newBook) => {
       if (err) return onFailure(err);
 
       onSuccess(newBook);
@@ -102,7 +102,7 @@ function checkIfBookExists(reqBody, onSuccess, onFailure) {
         }
       ]
     },
-    function(err, book) {
+    (err, book) => {
       // Unexpected DB error
       if (err) return onFailure(err);
 

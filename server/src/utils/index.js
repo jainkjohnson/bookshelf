@@ -1,16 +1,47 @@
 /**
- * Get object's own property if exists, otherwise
- * returns property from secondary object
+ * Get object's own property value if exists;
+ * Otherwise returns undefined.
  * @param {String} propName - Object prop name
- * @param {Object} obj1 - Primary object
- * @param {Object} obj2 - Secondary object
+ * @param {Object} primObj - Primary object
+ * @param {Object} secObj - Secondary object
+ * @return {Any}
  */
-function getObjOwnProp(propName, obj1, obj2) {
-  return obj1.hasOwnProperty(propName)
-    ? obj1[propName]
-    : obj2[propName]
+function getObjOwnProp(
+  propName = '',
+  primObj = {},
+  secObj = {}
+) {
+  return primObj.hasOwnProperty(propName)
+    ? primObj[propName]
+    : secObj[propName];
+}
+
+/**
+ * Get object's won property values if they exists;
+ * @param {String} propNames
+ * @param {Object} primObj
+ * @param {Object} secObj
+ */
+function getObjOwnProps(
+  propNames = [],
+  primObj = {},
+  secObj = {}
+) {
+  return propNames.reduce(
+    (acc, propName) => {
+      const propValue = getObjOwnProp(propName, primObj, secObj);
+
+      if (propValue !== undefined) {
+        acc[propName] = propValue;
+      }
+
+      return acc;
+    },
+    {}
+  );
 }
 
 module.exports = {
-  getObjOwnProp
-}
+  getObjOwnProp,
+  getObjOwnProps
+};

@@ -1,12 +1,13 @@
-var codes = require('../../config/codes');
+const codes = require('../../config/codes');
 
 module.exports = {
-  requiresLogin: function(req, res, next) {
+  requiresLogin: (req, res, next) => {
     if (req.session && req.session.userId) {
+      // Authentication successfull
       return next();
-    } else {
-      // HTTP 401 Unauthorized
-      return res.status(401).send({ error: codes.USER.E_AUTH });
     }
+
+    // HTTP 401 Unauthorized
+    res.status(401).send({ error: codes.USER.E_AUTH });
   }
 };
