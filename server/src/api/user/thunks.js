@@ -123,7 +123,9 @@ function authenticateUser(reqBody, onSuccess, onFailure) {
  * @param {String} params.bookId
  * @param {Object} params.reqBody
  * @param {Object} params.reqSession
- * @param {Boolean} params.overwrite
+ * @param {Boolean} params.add - set this `true` to 'add' new book
+ * @param {Boolean} params.overwrite - set this `true` to 'update' existing book
+ * @param {Boolean} params.remove - set this `true` to 'delete' existing book
  * @param {Function} onSuccess
  * @param {Function} onFailure
  */
@@ -132,6 +134,8 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
   const reqBody = params.reqBody;
   const reqSession = params.reqSession;
   const overwrite = params.overwrite || false;
+  const remove = params.remove || false;
+  const add = params.add || true;
 
   return User.findOne(
     { _id: reqSession.userId },
@@ -141,31 +145,56 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
 
       const userBooks = user.books || {};
 
-      if (!overwrite && userBooks[bookId]) {
-        // The same book already exists in user's Bookshelf.
-        // HTTP 409 Conflict
-        onFailure({
-          status: 409,
-          error: codes.BOOK.E_BOOKSHELF_DUP
+      // Check if the bookId already exists in user's bookshelf
+      if (utils.isObject(userBooks[bookId])) {
+        if (remove === true) {
+          // If there is an existing book and `remvove` flag is true
+          delete userBooks[bookId];
+        } else if (overwrite === true) {
+          userBooks[bookId] = utils.getObjOwnProps(
+            config.USER_BOOK_SCHEMA_PROPS,
+            // new values for book obj properties
+            reqBody,
+            // keep old values if new values are not specified
+            userBooks[bookId]
+          );
+        } else {
+          // Both `overwrite` and `remove` flags are `false` implies that
+          // user is trying to 'add' an existing book in user's bookshelf.
+          // But same bookId already exists in user's Bookshelf.
+          // HTTP 409 Conflict
+          return onFailure({
+            status: 409,
+            error: codes.BOOK.E_BOOKSHELF_DUP
+          });
+        }
+      } else if (remove === true) {
+        // Return error if no book matched `req.params.id`
+        // HTTP 404 Not Found
+        return onFailure({
+          status: 404,
+          error: codes.BOOK.E_NOT_FOUND
         });
-      } else {
+      } else if (add === true) {
+        // bookId does not exists in user's bookshelf, hence create it
         userBooks[bookId] = utils.getObjOwnProps(
           config.USER_BOOK_SCHEMA_PROPS,
           reqBody,
-          userBooks[bookId]
-        );
-
-        return User.findOneAndUpdate(
-          { _id: reqSession.userId },
-          { $set: { books: userBooks } },
-          (updateErr) => {
-            // Unexpected DB error
-            if (updateErr) return onFailure(updateErr);
-
-            onSuccess(bookId, userBooks[bookId]);
-          }
+          {}
         );
       }
+
+      // bookId has been added or delete
+      User.findOneAndUpdate(
+        { _id: reqSession.userId },
+        { $set: { books: userBooks } },
+        (updateErr) => {
+          // Unexpected DB error
+          if (updateErr) return onFailure(updateErr);
+
+          onSuccess(bookId, userBooks[bookId]);
+        }
+      );
     }
   );
 }

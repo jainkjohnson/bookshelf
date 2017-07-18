@@ -41,7 +41,17 @@ function getObjOwnProps(
   );
 }
 
+/**
+ * Check if value is plain object
+ * @param {*} value
+ * @returns {boolean}
+ */
+function isObject(value) {
+  return value !== null && !Array.isArray(value) && typeof value === 'object';
+}
+
 module.exports = {
   getObjOwnProp,
-  getObjOwnProps
+  getObjOwnProps,
+  isObject
 };

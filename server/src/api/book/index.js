@@ -78,6 +78,7 @@ router.post('/add', midWare.requiresLogin, (req, res, next) => {
       {
         reqBody: req.body,
         reqSession: req.session,
+        add: true,
         bookId
       },
       // success callback
@@ -160,22 +161,25 @@ router.put('/update/:id', midWare.requiresLogin, (req, res, next) => {
 });
 
 router.delete('/delete/:id', midWare.requiresLogin, (req, res, next) => {
-  Book.findOneAndRemove(
-    { _id: req.params.id },
-    (err, book) => {
-      if (err) return next(err);
-
-      if (!book) {
-        // Return 404 error if no book matched `req.params.id`
-        return res.status(404).send({
-          error: codes.BOOK.E_NOT_FOUND
-        });
+  userThunks.updateUserBookShelf(
+    {
+      reqBody: req.body,
+      reqSession: req.session,
+      bookId: req.params.id,
+      remove: true
+    },
+    // success callback
+    () => {
+      res.status(200).send({ message: codes.BOOK.S_DEL });
+    },
+    // failure callback
+    (err) => {
+      if (err.status && err.error) {
+        return res.status(err.status).send({ error: err.error });
       }
 
-      // book successfully deleted
-      return res.status(200).send({
-        message: codes.BOOK.S_BOOK_DEL
-      });
+      // Unexpected error
+      next(err);
     }
   );
 });
