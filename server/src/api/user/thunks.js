@@ -20,34 +20,40 @@ function registerUser(reqBody, onSuccess, onFailure) {
   const password = reqBody.password;
 
   if (email && username && password) {
-    // use schema.create to insert data into the db
-    User.create(
-      { email, username, password, books: {} },
-      (err, user) => {
-        if (err) {
-          // Handle known errors here
-          if (err.code === 11000) {
-            const startStr = 'index: ';
-            const endStr = '_1 dup key';
-            const dupField = err.errmsg.substring(
-              err.errmsg.indexOf(startStr) + startStr.length,
-              err.errmsg.lastIndexOf(endStr)
-            );
+    // [TODO]: Move the below code block to a 'pre' save hook
+    bcrypt.hash(password, config.HASH_SALT_ROUNDS, (err, hash) => {
+      // Unexpected BCrypt error
+      if (err) return onFailure(err);
 
-            // HTTP 400 Bad Request
-            return onFailure({
-              status: 400,
-              error: `${dupField} ${codes.COMMON.E_DUP}`
-            });
+      // use schema.create to insert data into the db
+      User.create(
+        { email, username, password: hash, books: {} },
+        (createErr, user) => {
+          if (err) {
+            // Handle known errors here
+            if (err.code === 11000) {
+              const startStr = 'index: ';
+              const endStr = '_1 dup key';
+              const dupField = err.errmsg.substring(
+                err.errmsg.indexOf(startStr) + startStr.length,
+                err.errmsg.lastIndexOf(endStr)
+              );
+
+              // HTTP 400 Bad Request
+              return onFailure({
+                status: 400,
+                error: `${dupField} ${codes.COMMON.E_DUP}`
+              });
+            }
+
+            // Unhandled error
+            return onFailure(createErr);
           }
 
-          // Unhandled error
-          return onFailure(err);
+          onSuccess(user._id);
         }
-
-        onSuccess(user._id);
-      }
-    );
+      );
+    });
   } else {
     // At least one of the required fields in `reqBody` was not good
     // HTTP 400 Bad Request
