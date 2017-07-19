@@ -16,9 +16,12 @@ module.exports = {
     publicPath: DEV_URL,
     port: PORT,
     // [TODO] Disabling proxy server for now; enable this once we are ready to hit APIs
-    // proxy: {
-    //   '/': 'http://localhost:4001' // Proxying to dev-api running at port 4001
-    // }
+    proxy: {
+      "/api": {
+        target: "http://localhost:4001",
+        pathRewrite: {"^/api" : ""}
+      } // Proxying to dev-api running at port 4001
+    }
   },
   output: {
     filename: 'bundle.js',

@@ -3,17 +3,21 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import appConfig from 'src/config/app';
 import Button from 'src/components/Button';
+import * as authActions from 'src/redux/auth/actions';
 import styles from './styles.scss';
 
-const { object } = PropTypes;
+const { object, func } = PropTypes;
 
 @connect(
   () => ({}),
-  {},
+  {
+    authenticateUser: authActions.authenticateUser
+  },
 )
 export default class Login extends PureComponent {
   static propTypes = {
     children: object,
+    authenticateUser: func
   };
 
   static contextTypes = {
@@ -40,6 +44,13 @@ export default class Login extends PureComponent {
   componentDidMount() {
   }
 
+  onLoginClick = () => {
+    this.props.authenticateUser({
+      email: this.state.email,
+      password: this.state.password
+    });
+  }
+
   trackChange = (name) => (event) => {
     this.setState({ [name]: event.target.value });
   }
@@ -51,11 +62,7 @@ export default class Login extends PureComponent {
           <div className={styles.headingContainer}>
               <label>LOGIN</label>
           </div>
-          <form
-            className={styles.formContainer}
-            name="form"
-            onSubmit={this.handleSubmit}
-          >
+          <div className={styles.formContainer}>
             <div className={styles.fields}>
               <label className={styles.loginLabel}>Email</label>
               <input
@@ -81,7 +88,7 @@ export default class Login extends PureComponent {
                 LOGIN
               </Button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     );
