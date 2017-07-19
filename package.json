@@ -4,7 +4,7 @@
   "description": "A place to organize your bibliographic collections.",
   "main": "server.js",
   "scripts": {
-    "dev-api": "nodemon server",
+    "dev-api": "sudo nodemon server",
     "dev-cli": "webpack-dev-server --config client/webpack/dev.js --colors --host=0.0.0.0 --progress"
   },
   "author": "Yadhu Kiran",
