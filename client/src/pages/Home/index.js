@@ -49,7 +49,7 @@ export default class App extends PureComponent {
   };
 
   componentDidMount() {
-    this.props.fetchAllBooks();
+    // this.props.fetchAllBooks();
   }
 
   componentWillReceiveProps() {
@@ -88,7 +88,10 @@ export default class App extends PureComponent {
       { key: 'category', label: 'Category' },
       { key: 'rating', label: 'Rating' },
     ];
-    const data = Object.keys(this.props.book).reduce((acc, cur) => [...acc, this.props.book[cur]], []);
+    const data = Object.keys(this.props.book).reduce(
+      (acc, cur) => [...acc, this.props.book[cur]],
+      []
+    );
 
     return (
       <div className={styles.homeContainer}>
@@ -105,7 +108,10 @@ export default class App extends PureComponent {
             onRowEditClick={this.onEditClick}
             onRowDeleteClick={this.onDeleteClick}
           />
-          <div className={styles.floatingAddButton} onClick={this.toggleBookFormModal}>
+          <div
+            className={styles.floatingAddButton}
+            onClick={this.toggleBookFormModal}
+          >
             <SvgIcon name="plus" className={styles.plusIcon} />
           </div>
           {
