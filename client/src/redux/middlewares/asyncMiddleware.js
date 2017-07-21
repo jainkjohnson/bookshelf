@@ -13,9 +13,13 @@ export default (store) => (next) => (action) => {
     return next(action);
   }
 
-  return promise(Api)
+  const promiseApi = promise(Api);
+
+  promiseApi
     .then((result) => next({ ...rest, result, type: asyncType }))
     .catch((error) => {
       throw new Error('ASYNC-MIDDLEWARE::', error);
     });
+
+  return promiseApi;
 };
