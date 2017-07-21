@@ -13,6 +13,23 @@ export function checkStatus(response) {
   throw error;
 }
 
+/**
+ * Generate credentials
+ * @param {string} credentials
+ * @returns {string}
+ */
+function generateCredentials(credentials) {
+  if (credentials) {
+    return [
+      'omit',
+      'include',
+      'same-origin',
+    ].indexOf(credentials) === -1 ? 'include' : credentials;
+  }
+
+  return 'same-origin';
+}
+
 export function getReqUrl({ params, endpoint, host }) {
   const base = host || apiRoot || '';
   const url = `${base}/${endpoint}`;
@@ -20,13 +37,14 @@ export function getReqUrl({ params, endpoint, host }) {
   return params ? getUrlWithQueryParams(url, params) : url;
 }
 
-export function getReqOptions(method, { headers, body }) {
+export function getReqOptions(method, { headers, body, credentials }) {
   const requestOptions = {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       ...headers,
     },
+    credentials: generateCredentials(credentials),
     method,
     mode: 'cors',
   };

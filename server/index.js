@@ -34,11 +34,27 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+/**
+ * [TODO] - Replace express-session default storage.
+ *
+ * The default server-side session storage, MemoryStore, is purposely
+ * not designed for a production environment. It will leak memory under
+ * most conditions, does not scale past a single process, and is meant
+ * only for debugging and developing.
+ *
+ * Compatible Session Stores:
+ * https://github.com/expressjs/session#compatible-session-stores
+ */
 // use sessions for tracking logins
 app.use(session({
   secret: 'SOME SECRET KEY TO ENCRYPT SESSION_ID',
   resave: true,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    // [TODO] I have a dream – one day we provide HTTPS
+    // secure: true
+    expires: new Date(+new Date() + 1.8e6) // 30mins from now
+  }
 }));
 
 // use our APIs

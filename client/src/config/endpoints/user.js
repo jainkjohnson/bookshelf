@@ -1,3 +1,3 @@
 export default {
-  authenticateUser: 'api/user/login'
+  authenticateUser: 'user/login'
 };
