@@ -60,7 +60,7 @@ export default class Login extends PureComponent {
       <div className={styles.rootContainer}>
         <div className={styles.subContainer}>
           <div className={styles.headingContainer}>
-              <label>LOGIN</label>
+            <label>LOGIN</label>
           </div>
           <div className={styles.formContainer}>
             <div className={styles.fields}>

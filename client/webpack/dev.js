@@ -17,7 +17,7 @@ module.exports = {
     port: PORT,
     // [TODO] Disabling proxy server for now; enable this once we are ready to hit APIs
     proxy: {
-      "/api": {
+      '/api': {
         target: "http://localhost:4001",
         pathRewrite: {"^/api" : ""}
       } // Proxying to dev-api running at port 4001
