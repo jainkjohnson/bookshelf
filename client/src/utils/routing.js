@@ -1,17 +1,25 @@
 /**
  * Update base url with query parameters
- * eg: getUrlWithQueryParams(www.somewhere.com, { brand: 'uq', somethingElse: 'value' })
- * gives the string => 'www.somewhere.com?brand=uq&somethingElse=value'
- * @param   {String} base
- * @param   {Object} [queryData={}]
- * @return  {String} base url with queries
+ * eg: getUrlWithQueryParams(www.somewhere.com, { a: '1', b: 'xxx' })
+ *     gives the string => 'www.somewhere.com?a=1&b=xxx'
+ * @param {string} base
+ * @param {Object} [queryData={}]
+ * @returns {string} base url with queries
  */
 export function getUrlWithQueryParams(base, queryData = {}) {
   const queries = Object.keys(queryData);
 
   return queries.reduce((acc, query, index) => {
-    const url = `${acc}${encodeURIComponent(query)}=${encodeURIComponent(queryData[query])}`;
+    const qry = encodeURIComponent(query);
+    const val = encodeURIComponent(queryData[query]);
+    const url = `${acc}${qry}=${val}`;
 
     return index + 1 < queries.length ? `${url}&` : url;
   }, `${base}?`);
+}
+
+export function redirect(path = '') {
+  const { origin, search } = window.location;
+
+  window.location.assign(`${origin}${path}${search}`);
 }

@@ -2,10 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import appConfig from 'src/config/app';
-import Home from 'src/pages/Home';
 import styles from './styles.scss';
 
-const { object } = PropTypes;
+const { object, any } = PropTypes;
 
 @connect(
   () => ({}),
@@ -13,6 +12,7 @@ const { object } = PropTypes;
 )
 export default class App extends PureComponent {
   static propTypes = {
+    children: any
   };
 
   static contextTypes = {
@@ -42,7 +42,7 @@ export default class App extends PureComponent {
   render() {
     return (
       <div className={styles.bookshelfApp}>
-        <Home />
+        {this.props.children}
       </div>
     );
   }

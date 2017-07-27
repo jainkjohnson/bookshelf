@@ -3,16 +3,30 @@ import { getUrlWithQueryParams } from 'src/utils/routing';
 
 const { apiRoot } = endpoints;
 
-export function checkStatus(response) {
-  if (response.ok) {
-    return response;
+/**
+ * Generate credentials
+ * @param {string} credentials
+ * @returns {string}
+ */
+function generateCredentials(credentials) {
+  if (credentials) {
+    return [
+      'omit',
+      'include',
+      'same-origin',
+    ].indexOf(credentials) === -1 ? 'include' : credentials;
   }
 
-  const error = new Error(response.statusText);
-
-  throw error;
+  return 'same-origin';
 }
 
+/**
+ * Construct request endpoint URL
+ * @param {Object} params - query parameters used in API call
+ * @param {string} endpoint - API endpoint
+ * @param {string} host - API base path to override default `apiRoot`
+ * @returns {string}
+ */
 export function getReqUrl({ params, endpoint, host }) {
   const base = host || apiRoot || '';
   const url = `${base}/${endpoint}`;
@@ -20,13 +34,23 @@ export function getReqUrl({ params, endpoint, host }) {
   return params ? getUrlWithQueryParams(url, params) : url;
 }
 
-export function getReqOptions(method, { headers, body }) {
+/**
+ * Construct the options object containing any custom settings
+ * that you want to apply to the request.
+ * Refer `init` object doc:
+ * developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
+ * @param {string} method - REST API method
+ * @param {Object} headers - request header props
+ * @returns {Object}
+*/
+export function getReqOptions(method, { headers, body, credentials }) {
   const requestOptions = {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       ...headers,
     },
+    credentials: generateCredentials(credentials),
     method,
     mode: 'cors',
   };
@@ -38,13 +62,59 @@ export function getReqOptions(method, { headers, body }) {
   return requestOptions;
 }
 
+/**
+ * Parse API response
+ * @param {Object} res - response object
+ * @param {string} method - REST API method
+ * @param {Object} params - query parameters used in API call
+ * @returns {Promise}
+ */
+function parseResponse(res) {
+  const json = res.text().then((text) => {
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      return {
+        statusCode: res.status,
+        ...error,
+      };
+    }
+  });
+
+  if (res.status >= 400) {
+    // When the server response contains important JSON data for errors
+    return json.then((error) => ({
+      ...error,
+      endpoint: res.url,
+      statusCode: res.status,
+    })).then(Promise.reject.bind(Promise));
+  }
+
+  return json;
+}
+
+/**
+ * This function process the error when the server is down or there's no
+ * connectivity available. It also process all other errors, but does not
+ * do anything special for those.
+ */
+function handleConnectionErrors(error) {
+  return Promise.reject(error);
+}
+
+/**
+ * Makes API call using fetch
+ * @param {string} method - HTTP request method
+ * @param {Object} reqOptions
+ * @returns {Promise<Response>}
+ */
 function Api(method, reqOptions) {
   const url = getReqUrl(reqOptions);
   const options = getReqOptions(method, reqOptions);
 
   return fetch(url, options)
-    .then(checkStatus)
-    .then((response) => response.json());
+    .then((response) => parseResponse(response))
+    .catch((error) => handleConnectionErrors(error));
 }
 
 export default {

@@ -1,0 +1,74 @@
+@import '~src/theme/main.scss';
+
+.rootContainer {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  background: white;
+  padding-top: 7%;
+
+  .subContainer {
+    max-width: 650px;
+    width: 41%;
+  }
+
+  .headingContainer {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    background: #A63716;
+    color: white;
+    border: 1px solid #8C2F12;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding-left: 30px;
+  }
+
+  .formContainer {
+    border: 2px solid #dfdfdf;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 10px 25px 25px 25px;
+
+    .loginLabel {
+      color: #000000;
+      display: block;
+      margin-bottom: 5px;
+      padding-bottom: 0;
+      text-align: left;
+    }
+
+    .fields {
+      margin-top: 15px;
+    }
+
+    .formControl {
+      border-width: 1px;
+      border-radius: 3px;
+      border-style: solid;
+      padding: 5px 0px 5px 5px;
+      width: 100%;
+    }
+
+    .buttonContainer {
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      button {
+        background: #000000;
+        color: #FFFFFF;
+        font-size: 14px;
+        height: 35px;
+        padding: 6px 12px;
+        min-width: 25%;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        margin: 0px 15px 0px 0px;
+      }
+    }
+  }
+}
+

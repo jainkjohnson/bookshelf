@@ -1,12 +1,13 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+
+const Schema = mongoose.Schema;
 
 // creating the book schema with 3 properties
-var BookSchema = new Schema({
+const BookSchema = new Schema({
   title: String,
   author: String,
   category: String,
-  rating: Number,
+  // Custom Id overrides mongo's native ObjectId
   _id: String
 });
 

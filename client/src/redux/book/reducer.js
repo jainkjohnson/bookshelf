@@ -3,7 +3,7 @@ import {
   ADD_BOOK,
   UPDATE_BOOK,
   REMOVE_BOOK,
-  FETCH_ALL_BOOKS,
+  FETCH_MY_BOOKS,
 } from './constants';
 
 export default function reducer(state = initialState, action = {}) {
@@ -19,7 +19,7 @@ export default function reducer(state = initialState, action = {}) {
     case UPDATE_BOOK:
       return {
         ...state,
-        [action.book._id]: action.result.book,
+        [action.book._id]: action.result,
       };
     case REMOVE_BOOK:
       const currentState = { ...state };
@@ -27,7 +27,7 @@ export default function reducer(state = initialState, action = {}) {
       delete currentState[action.id];
 
       return currentState;
-    case FETCH_ALL_BOOKS:
+    case FETCH_MY_BOOKS:
       const allBooks = action.result || [];
       const newState = allBooks.reduce((acc, cur) => ({
         ...acc,

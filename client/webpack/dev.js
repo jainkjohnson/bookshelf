@@ -5,8 +5,6 @@ const path = require('path');
 const PORT = 4000;
 const DEV_URL = `http://localhost:${PORT}/`;
 
-console.log('DEV_URL : ', DEV_URL);
-
 module.exports = {
   devtool: 'eval',
   context: path.resolve(__dirname, '..'),
@@ -15,8 +13,12 @@ module.exports = {
     historyApiFallback: true,
     publicPath: DEV_URL,
     port: PORT,
+    // Proxying to dev-api running at port 4001
     proxy: {
-      '/': 'http://localhost:4001' // Proxying to dev-api running at port 4001
+      '/api': {
+        target: 'http://localhost:4001',
+        pathRewrite: { '^/api' : '' }
+      }
     }
   },
   output: {

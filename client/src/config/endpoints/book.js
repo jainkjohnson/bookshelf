@@ -1,5 +1,5 @@
 export default {
-  books: 'books',
+  myBooks: 'book/my_books',
   addBook: 'book/add',
   updateBook: 'book/update',
   deleteBook: 'book/delete',

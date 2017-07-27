@@ -3,13 +3,13 @@ import {
   ADD_BOOK,
   UPDATE_BOOK,
   REMOVE_BOOK,
-  FETCH_ALL_BOOKS,
+  FETCH_MY_BOOKS,
 } from './constants';
 
-export function fetchAllBooks() {
+export function fetchMyBooks() {
   return {
-    asyncType: FETCH_ALL_BOOKS,
-    promise: (Api) => Api.GET({ endpoint: bookApi.books }),
+    asyncType: FETCH_MY_BOOKS,
+    promise: (Api) => Api.GET({ endpoint: bookApi.myBooks }),
   };
 }
 
