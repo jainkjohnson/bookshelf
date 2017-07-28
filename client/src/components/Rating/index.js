@@ -12,11 +12,11 @@ const Rating = (props) => {
 
   for (let index = 1; index <= maximum; index++) {
     if (index <= fullStarsCount) {
-      stars.push(<SvgIcon name="fullStar" key={index} />);
+      stars.push(<SvgIcon name={`${props.type}Full`} key={index} />);
     } else if (halfStar && index === fullStarsCount + 1) {
-      stars.push(<SvgIcon name="halfStar" key={index} />);
+      stars.push(<SvgIcon name={`${props.type}Half`} key={index} />);
     } else {
-      stars.push(<SvgIcon name="emptyStar" key={index} />);
+      stars.push(<SvgIcon name={`${props.type}Empty`} key={index} />);
     }
   }
 
@@ -27,11 +27,16 @@ const Rating = (props) => {
   );
 };
 
-const { oneOfType, number, string } = PropTypes;
+const { oneOfType, number, string, oneOf } = PropTypes;
 
 Rating.propTypes = {
   value: oneOfType([number, string]),
   maximum: oneOfType([number, string]),
+  type: oneOf(['heart', 'star'])
+};
+
+Rating.defaultProps = {
+  type: 'star'
 };
 
 export default Rating;

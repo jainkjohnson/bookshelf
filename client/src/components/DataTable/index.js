@@ -51,7 +51,14 @@ export default class DataTable extends PureComponent {
       <td key={index} data-label={colData.label}>
         {
           colData.key === 'rating'
-            ? <Rating key={index} value={rowData[colData.key]} maximum={5} />
+            ? (
+              <Rating
+                key={index}
+                value={rowData[colData.key]}
+                maximum={5}
+                type="heart"
+              />
+            )
             : rowData[colData.key]
         }
       </td>
