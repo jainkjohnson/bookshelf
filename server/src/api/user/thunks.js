@@ -41,14 +41,14 @@ function registerUser(reqBody, onSuccess, onFailure) {
       User.create(
         { email, username, password: hash, books: {} },
         (createErr, user) => {
-          if (err) {
+          if (createErr) {
             // Handle known errors here
-            if (err.code === 11000) {
+            if (createErr.code === 11000) {
               const startStr = 'index: ';
               const endStr = '_1 dup key';
-              const dupField = err.errmsg.substring(
-                err.errmsg.indexOf(startStr) + startStr.length,
-                err.errmsg.lastIndexOf(endStr)
+              const dupField = createErr.errmsg.substring(
+                createErr.errmsg.indexOf(startStr) + startStr.length,
+                createErr.errmsg.lastIndexOf(endStr)
               );
 
               // HTTP 400 Bad Request
