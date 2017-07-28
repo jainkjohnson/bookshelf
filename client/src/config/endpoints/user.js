@@ -1,3 +1,4 @@
 export default {
-  authenticateUser: 'user/login'
+  authenticateUser: 'user/login',
+  registerUser: 'user/register'
 };
