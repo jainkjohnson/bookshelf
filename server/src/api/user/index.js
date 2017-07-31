@@ -43,8 +43,8 @@ router.post('/register', (req, res, next) => {
 });
 
 /**
- * New user Registration
- * @name registerUser
+ * User authentication
+ * @name authenticateUser
  *
  *    method: POST
  *    endpoint: '/user/login'
@@ -80,8 +80,8 @@ router.post('/login', (req, res, next) => {
 });
 
 /**
- * New user Registration
- * @name registerUser
+ * User logout
+ * @name logoutUser
  *
  *    method: GET
  *    endpoint: '/user/logout'
