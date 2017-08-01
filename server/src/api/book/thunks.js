@@ -94,9 +94,9 @@ function updateBook(params, onSuccess, onFailure) {
  *      OR
  *  - Matches `reqBody.title` && `reqBody.author`
  * @param {Object} reqBody
- * @param {string} reqBody._id
- * @param {string} reqBody.title
- * @param {string} reqBody.author
+ * @param {String} reqBody._id
+ * @param {String} reqBody.title
+ * @param {String} reqBody.author
  * @param {onSuccessCallback} onSuccess
  * @param {onFailureCallback} onFailure
  */

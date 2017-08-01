@@ -1,7 +1,7 @@
 /**
  * Get object's own property value if exists;
  * Otherwise returns undefined.
- * @param {string} propName - Object prop name
+ * @param {String} propName - Object prop name
  * @param {Object} primObj - Primary object
  * @param {Object} secObj - Secondary object
  * @return {Any}
@@ -44,7 +44,7 @@ function getObjOwnProps(
 /**
  * Check if value is plain object
  * @param {*} value
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function isObject(value) {
   return value !== null && !Array.isArray(value) && typeof value === 'object';

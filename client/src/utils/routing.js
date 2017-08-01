@@ -2,9 +2,9 @@
  * Update base url with query parameters
  * eg: getUrlWithQueryParams(www.somewhere.com, { a: '1', b: 'xxx' })
  *     gives the string => 'www.somewhere.com?a=1&b=xxx'
- * @param {string} base
+ * @param {String} base
  * @param {Object} [queryData={}]
- * @returns {string} base url with queries
+ * @returns {String} base url with queries
  */
 export function getUrlWithQueryParams(base, queryData = {}) {
   const queries = Object.keys(queryData);

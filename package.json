@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "dev-api": "nodemon server",
-    "dev-cli": "webpack-dev-server --config client/webpack/dev.js --colors --host=0.0.0.0 --progress"
+    "dev-cli": "webpack-dev-server --config client/webpack/dev.js --colors --host=0.0.0.0 --progress",
+    "lint-api": "eslint -c .eslintrc ./server --ext '.js, .jsx' --color",
+    "lint-cli": "eslint -c .eslintrc ./client --ext '.js, .jsx' --color"
   },
   "author": "Yadhu Kiran",
   "license": "MIT",

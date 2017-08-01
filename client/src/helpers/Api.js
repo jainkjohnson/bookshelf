@@ -5,8 +5,8 @@ const { apiRoot } = endpoints;
 
 /**
  * Generate credentials
- * @param {string} credentials
- * @returns {string}
+ * @param {String} credentials
+ * @returns {String}
  */
 function generateCredentials(credentials) {
   if (credentials) {
@@ -23,9 +23,9 @@ function generateCredentials(credentials) {
 /**
  * Construct request endpoint URL
  * @param {Object} params - query parameters used in API call
- * @param {string} endpoint - API endpoint
- * @param {string} host - API base path to override default `apiRoot`
- * @returns {string}
+ * @param {String} endpoint - API endpoint
+ * @param {String} host - API base path to override default `apiRoot`
+ * @returns {String}
  */
 export function getReqUrl({ params, endpoint, host }) {
   const base = host || apiRoot || '';
@@ -39,7 +39,7 @@ export function getReqUrl({ params, endpoint, host }) {
  * that you want to apply to the request.
  * Refer `init` object doc:
  * developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
- * @param {string} method - REST API method
+ * @param {String} method - REST API method
  * @param {Object} headers - request header props
  * @returns {Object}
 */
@@ -65,7 +65,7 @@ export function getReqOptions(method, { headers, body, credentials }) {
 /**
  * Parse API response
  * @param {Object} res - response object
- * @param {string} method - REST API method
+ * @param {String} method - REST API method
  * @param {Object} params - query parameters used in API call
  * @returns {Promise}
  */
@@ -104,7 +104,7 @@ function handleConnectionErrors(error) {
 
 /**
  * Makes API call using fetch
- * @param {string} method - HTTP request method
+ * @param {String} method - HTTP request method
  * @param {Object} reqOptions
  * @returns {Promise<Response>}
  */

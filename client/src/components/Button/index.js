@@ -50,7 +50,10 @@ export default class Button extends PureComponent {
 
     if (preventMultipleClicks) {
       this.setState({ clicked: true });
-      this.resetClick = setTimeout(() => this.setState({ clicked: false }), BUTTON_DISABLE_DURATION);
+      this.resetClick = setTimeout(
+        () => this.setState({ clicked: false }),
+        BUTTON_DISABLE_DURATION
+      );
     }
 
     this.props.onClick(event);

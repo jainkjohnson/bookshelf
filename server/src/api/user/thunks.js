@@ -20,9 +20,9 @@ const utils = require('../../utils');
  * Register new user:
  * Create a new record under `users` collection
  * @param {Object} reqBody
- * @param {string} reqBody.email
- * @param {string} reqBody.username
- * @param {string} reqBody.password
+ * @param {String} reqBody.email
+ * @param {String} reqBody.username
+ * @param {String} reqBody.password
  * @param {onSuccessCallback} onSuccess
  * @param {onFailureCallback} onFailure
  */
@@ -79,9 +79,9 @@ function registerUser(reqBody, onSuccess, onFailure) {
 /**
  * Authenticate user credentials against database
  * @param {Object} reqBody
- * @param {string} reqBody.email
- * @param {string} reqBody.username
- * @param {string} reqBody.password
+ * @param {String} reqBody.email
+ * @param {String} reqBody.username
+ * @param {String} reqBody.password
  * @param {onSuccessCallback} onSuccess
  * @param {onFailureCallback} onFailure
  */
@@ -138,7 +138,7 @@ function authenticateUser(reqBody, onSuccess, onFailure) {
 /**
  * Update user's Bookshelf with new book details.
  * @param {Object} params
- * @param {string} params.bookId
+ * @param {String} params.bookId
  * @param {Object} params.reqBody
  * @param {Object} params.reqSession
  * @param {Boolean} params.add - set this `true` to 'add' new book
@@ -220,7 +220,7 @@ function updateUserBookShelf(params, onSuccess, onFailure) {
 /**
  * Get all books in user's Bookshelf
  * @param {Object} reqSession
- * @param {string} reqSession.userId
+ * @param {String} reqSession.userId
  * @param {onSuccessCallback} onSuccess
  * @param {onFailureCallback} onFailure
  */
